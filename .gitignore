@@ -1,0 +1,2 @@
+# Ignore class files, do not upload to Github.
+*.class

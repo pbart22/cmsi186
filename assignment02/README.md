@@ -1,0 +1,2 @@
+# CMSI 186 Pi Estimator Assignment & Shared Birthday Probablilites Assignment
+This folder contains code for a program that estimates pi based on how many darts land within the dart board, and code for a program that estimates the probablility that at least 2 people out of a group of N size share the same birthday
