@@ -6,13 +6,13 @@ public class PiEstimator {
     
     public static void main(String[] args) {
         
-        int max = 10000;
+        int defaultDarts = 10000;
 
         if (args.length != 1) {
             System.out.println("Invalid input: At least one integer argument needed, defaulting to 10,000");
         } else {
         try {
-            max = Integer.parseInt(args[0]);
+            defaultDarts = Integer.parseInt(args[0]);
         
          } catch (NumberFormatException nfe) {
             System.out.print("Invalid input: The argument must be an integer, Please try Again!");
@@ -20,7 +20,7 @@ public class PiEstimator {
         }
     }
 
-    System.out.println("Estimate of pi: " + estimate(max));
+    System.out.println("Estimate of pi: " + estimate(defaultDarts));
 
         }
     
