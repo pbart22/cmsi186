@@ -86,13 +86,12 @@ public class Die {
    * @throws      IllegalArgumentException
    */
    public int setSides( int sides ) {
-   	if (sides < MINIMUM_SIDES) {
-   		throw new IllegalArgumentException("Minimum number of sides needs to be 4.");
-   	} else {
-   		this.sides = sides;
-   		return sides;
-
-   	}
+   	    if (sides < MINIMUM_SIDES) {
+      throw new IllegalArgumentException("Minimum number of sides needs to be 4.");
+    } else {
+      this.sides = sides;
+    }
+    return sides;
    }
 
   /**
@@ -117,6 +116,39 @@ public class Die {
    public static void main( String[] args ) {
    	System.out.println( "Hello world from the Die class..." );
 
-   }
+    System.out.println("Testing Die Constructor");
+    try {
+      Die x = new Die(0);
+    } catch(IllegalArgumentException iae) {
+      System.out.println("Die needs to have at least 4 sides");
+    }
+    try {
+      Die x = new Die(7);
+      System.out.println(x.toString());
+    } catch (IllegalArgumentException iae) {
+      System.out.println("Die needs to have at least 4 sides");
+    }
 
+    System.out.println("Testing roll()");
+    Die x = new Die(8);
+    System.out.println("Value of die x before roll is: " + x.toString());
+    x.roll();
+    System.out.println("Value of die x after roll is: " + x.toString());
+    x.roll();
+    System.out.println("Value of die x after second role: " + x.toString());
+    x.roll();
+    System.out.println("Value of die x after third role: " + x.toString());
+    x.roll();
+    System.out.println("Value of die x after fourth role: " + x.toString());
+
+    System.out.println("Testing getValue()");
+    System.out.println("The value of die x is: " + x.getValue());
+    Die y = new Die(4);
+    System.out.println("The value of die y is: " + y.getValue());
+
+    System.out.println("Testing setSides()");
+    System.out.println("New sides for die y is: " + y.setSides(8));
+    System.out.println("New Sides for die y has changed to: " + y.setSides(6));
+
+  }
 }
