@@ -1,7 +1,5 @@
 public class HighRoll {
 
-
-
 	public static void main (String args[]) {
 		System.out.println();
 		System.out.println("\n                      Welcome to HighRoll!\n");
