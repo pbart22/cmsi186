@@ -86,12 +86,14 @@ public class Die {
    * @throws      IllegalArgumentException
    */
    public int setSides( int sides ) {
-   	    if (sides < MINIMUM_SIDES) {
-      throw new IllegalArgumentException("Minimum number of sides needs to be 4.");
+    if (sides < MINIMUM_SIDES) {
+    	throw new IllegalArgumentException("Can only create a die with 4 or more sides");
     } else {
-      this.sides = sides;
+
+    	this.sides = sides;
     }
-    return sides;
+
+    return this.sides;
    }
 
   /**

@@ -3,7 +3,7 @@ public class HighRoll {
 	public static void main (String args[]) {
 		System.out.println();
 		System.out.println("\n                      Welcome to HighRoll!\n");
-		System.out.println("               *************************************");
+		System.out.println("             *************************************");
 		System.out.println("\nRoll the dice and try to get the highest summed value possible.\n");
 	
 		int count = 0;
@@ -29,17 +29,7 @@ public class HighRoll {
 		var console = System.console();
 
 		System.out.println("\nYour current set of die is: " + userDice.toString());
-		System.out.println("\nBelow is the main Menu:");
-		System.out.println();
-		System.out.println();
-		System.out.println("Press the 'r' key to roll of the dice in set.");
-		System.out.println("Press the 'd' key to roll an individual die in the set");
-		System.out.println("Press the 'c' key to calculate your current score");
-		System.out.println("Press the 's' key to save your score");
-		System.out.println("Press the 'y' key to display your high score");
-		System.out.println("press the 'q' key to quit the program");
-		System.out.println("press the 'm' key to display the main menu again");
-		System.out.println();
+		HighRoll.mainMenu();
 
 
 		while (true){
@@ -50,51 +40,62 @@ public class HighRoll {
 				System.out.println();
 
 				if('m' == commandLine.charAt(0)) {
-					System.out.println("Press the 'r' key to roll of the dice in set.");
-					System.out.println("Press the 'd' key to roll an individual die in the set");
-					System.out.println("Press the 'c' key to calculate your current score");
-					System.out.println("Press the 's' key to save your score");
-					System.out.println("Press the 'y' key to display your high score");
-					System.out.println("press the 'q' key to quit the program");
-					System.out.println("press the 'm' key to display the main menu again");
-					System.out.println();
+					HighRoll.mainMenu();
 				}
-				if ('r' == commandLine.charAt(0)) {
+				else if ('r' == commandLine.charAt(0)) {
 					userDice.roll();
 					System.out.print("\nDice values after roll is: " + userDice.toString());
 					System.out.println();
 				}
-				if ('d' == commandLine.charAt(0)){
+				else if ('d' == commandLine.charAt(0)){
 					String selectDie = console.readLine("Select a die to roll from your set ").trim();
 					int selectedDieIndex = Integer.parseInt(selectDie) - 1;
 					System.out.println("\nYou rolled a: " + userDice.rollIndividual(selectedDieIndex));
 					System.out.println("\nYour current set is now: " + userDice.toString());
 					System.out.println(); 
 				}
-				if ('c' == commandLine.charAt(0)) {
+				else if ('c' == commandLine.charAt(0)) {
 					sumOfDice = userDice.sum();
 					System.out.println("\nThe sum of all the die in your set is: " + sumOfDice);
 					System.out.println("\nYour current set is: " + userDice.toString());
 				}
-				if ('s' == commandLine.charAt(0)) {
+				else if ('s' == commandLine.charAt(0)) {
 					highScore = sumOfDice;
 					System.out.println("\nYour high score of " + highScore + " has been saved");
 					System.out.println("\nYour current set is: " + userDice.toString());
 				}
-				if ('y' == commandLine.charAt(0)) {
+				else if ('y' == commandLine.charAt(0)) {
 					System.out.println("\nYour high score is: " + highScore);
 					System.out.println("\nYour current set is: " + userDice.toString());
 					System.out.println();
 				}
-				if ('q' == commandLine.charAt(0)) {
+				else if ('q' == commandLine.charAt(0)) {
 					System.out.println("\nThank you for playing!\n");
 					break;
+				} 
+				else {
+					System.out.println("Option is not in the main menu, please try again!");
 				}
-				} catch(IllegalArgumentException iae) {
+				} catch(Exception e) {
 				System.out.println("Please make sure your input is valid.");
-					}
+				}
 			}
 		}
-	}
+	
+
+	public static void mainMenu() {
+		System.out.println("\nBelow is the main Menu:");
+		System.out.println();
+		System.out.println();
+		System.out.println("Press the [r] key to roll of the dice in set.");
+		System.out.println("Press the [d] key to roll an individual die in the set");
+		System.out.println("Press the [c] key to calculate your current score");
+		System.out.println("Press the [s] key to save your score");
+		System.out.println("Press the [y] key to display your high score");
+		System.out.println("press the [q] key to quit the program");
+		System.out.println("press the [m] key to display the main menu again");
+		System.out.println();
+		}
+}
 
 

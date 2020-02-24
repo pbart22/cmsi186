@@ -147,18 +147,25 @@ public class DiceSet {
    public static void main( String[] args ) {
       DiceSet ds2 = new DiceSet(4, 6);
       try {
+        System.out.println();
+        System.out.println("Testing The Creation of a DiceSet");
         System.out.println("Successfully created ds2 of count 4 and sides 6");
         System.out.println(ds2.toString());
       } catch(IllegalArgumentException iae) {
         System.out.println("No DiceSet created, can't make a DiceSet of 0 die");
       }
 
+      System.out.println();
+
       System.out.println("Testing Collective Roll of ds2");
       ds2.roll();
       System.out.println("New numbers after Collective roll are: " + ds2.toString());
+      System.out.println();
 
       System.out.println("Testing the Sum Method for ds2");
+      System.out.println();
       System.out.println("Sum of the Diceset is: " + ds2.sum());
+      System.out.println();
 
       System.out.println("Testing the Roll Indiviual Method for ds2");
       try{
@@ -168,6 +175,8 @@ public class DiceSet {
       } catch(IllegalArgumentException iae) {
         System.out.println("Index is invalid");
       }
+
+      System.out.println();
 
       System.out.println("Testing to get Indivual Die Value in ds2");
       try{
@@ -179,6 +188,8 @@ public class DiceSet {
         System.out.println("index is out of range");
       }
 
+      System.out.println();
+
       System.out.println("Second Round of Testing with DiceSet ds3");
       DiceSet ds3 = new DiceSet(5, 8);
       try{
@@ -188,6 +199,8 @@ public class DiceSet {
         System.out.println("No DiceSet created, can't make a DiceSet of 0 die");
       }
 
+      System.out.println();
+
       System.out.println("Testing Collective Roll of ds3");
       ds3.roll();
       System.out.println("New value of ds3 after rolling all die are: " + ds3.toString());
@@ -195,16 +208,21 @@ public class DiceSet {
       System.out.println("Testing the Sum of All Dice Values in ds3");
       System.out.println("The sum of the DiceSet is: " + ds3.sum());
 
+      System.out.println();
+
       System.out.println("Testing Indiviual Roll Method for ds3");
       try {
        ds3.rollIndividual(2);
       System.out.println("Value after indivdual roll is: " + ds3.toString());
       ds3.rollIndividual(4);
       System.out.println("Value after individual roll is: " + ds3.toString());
+      System.out.println();
       System.out.println("Testing sum() after indiviual roll, new sum of set is: " + ds3.sum()); 
       } catch(IllegalArgumentException iae) {
         System.out.println("Index is out of range");
       }
+
+      System.out.println();
 
       System.out.println("Testing to get Indiviual Die Value in ds3");
       try{
@@ -216,6 +234,9 @@ public class DiceSet {
       } catch(IllegalArgumentException iae) {
         System.out.println("Index is out of range");
       }
+
+      System.out.println();
+      System.out.println("End of DiceSet Testing");
       
       }
 
