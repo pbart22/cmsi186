@@ -41,6 +41,9 @@ public class PlaygroundSoccerSim {
   private Ball[] soccerBalls = null;
   //    - clock
   private Clock c = new Clock();
+  private int[] ballsCollided = new int [2];
+  private boolean collisionOccur = false;
+  private boolean checkSimToRun = true;
 
   // You can put a private static final String here that includes the intro message
   //  or how to use the program
@@ -119,21 +122,19 @@ public class PlaygroundSoccerSim {
    *  NOTE: this method calls the clock.tick() method to get one second to elapse
    */
    public void report() {
-    for (int i = 0; i < soccerBalls.length; i++) {
-      while (soccerBalls[i].isStillMoving() == true) {
-        c.tick(timeSlice);
-        soccerBalls[i].updateSpeedsForOneTick(timeSlice);
-        System.out.println();
-        System.out.println("Ball" + i + " " + "Progress Report at: " + c.toString());
-        System.out.println("Ball" + i + " " + "Progress: " + soccerBalls[i].toString());
-        simUpdate();
-      } 
-      System.out.println();
-      DecimalFormat dfl = new DecimalFormat("#0.00");
-      DecimalFormat dfs = new DecimalFormat("#0.0000");
-      System.out.println("Ball" + i + " " + "is out of Bounds or has Stopped moving at time: " + c.toString() + " " + "location: " + "[" + dfl.format(soccerBalls[i].getPosition("x")) + ", " + dfl.format(soccerBalls[i].getPosition("y")) + "]" 
-        + " " + "speed: " + "[" + dfs.format(soccerBalls[i].getSpeed("x")) + ", " + dfs.format(soccerBalls[i].getSpeed("y")) + "]");
+    c.tick(timeSlice);
+    String output = "";
+    if (checkSimToRun == true) {
+      output = "Total Balls in Motion: " + Double.toString(soccerBalls.length) + "\n";
+      for (int i = 0; i < soccerBalls.length; i++) {
+        System.out.println("Progress Report at: " + c.toString() + "\n" + "Ball" + i + " status: " + soccerBalls[i].toString());
+      }
+    } else if (checkSimToRun == false && collisionOccur == false) {
+      output = "No collisions detected " + "Time: " + c.toString();
+    } else {
+      output = "Collision occured between Balls " + (ballsCollided[0] + 1) + " and " + (ballsCollided[1] + 1) + " At Time: " + c.toString();
     }
+  System.out.println(output);
    }
 
   /**
@@ -144,20 +145,23 @@ public class PlaygroundSoccerSim {
     // for each ball
     //  - if the ball is not out of bounds and not at rest, move the ball
     //  - if the ball is out of bounds after the move or at rest, set the ball out of bounds or at rest
-    for (int i = 0; i < soccerBalls.length; i++) {
-      if(soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == false && soccerBalls[i].isStillMoving() == true) {
+    while (checkSimToRun == true) {
+      report();
+      collisionCheck();
+      atLeastOneBallStillMoving();
+      for (int i = 0; i < soccerBalls.length; i++) {
         soccerBalls[i].move(timeSlice);
       } 
-      else if (soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true || soccerBalls[i].isStillMoving() == false) {
-        soccerBalls[i].isStillMoving();
+
       }
+
+      report();
     }
-}
   /**
    *  method to check for a collision soccerBall array
    *
    */
-   public boolean collisionCheck() {
+   public void collisionCheck() {
 
     // Compare location of each ball, to every other ball in the array (unless the ball is out of bounds)
     // Use the distance formula (from our dart assignment) to determind if the balls have collided
@@ -166,59 +170,50 @@ public class PlaygroundSoccerSim {
     // you can decide what you want this method to return
     // if it returns an array of integers, perhaps the array should contain the indexes
     // of the two balls that collided
-double ballRadius = 4.45;
-    b1_outer: for (int i = 0; i < soccerBalls.length - 1; i++) {
+    double ballRadius = 4.45;
+    collideCheck: for (int i = 0; i < soccerBalls.length - 1; i++) {
       for (int j = i + 1; j < soccerBalls.length; j++) {
+        // Skipping any balls that are out of bounds
+        if (soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
+          i++;
+        }
+        if (soccerBalls[j].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true){
+          j++;
+        }
+        // checking for collision and updating variables if there was one
         if (Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-          System.out.println("The balls that have collided are: " + "[" + (i + 1) + (j + 1) +"]");
-          return true;
+          ballsCollided[0] = i;
+          ballsCollided[1] = j;
+          collisionOccur = true;
+          checkSimToRun = false;
         }
-         break b1_outer;
+        break collideCheck;
       }
-      for (int k = i + 2; k < soccerBalls.length; k++) {
-        if (Math.sqrt(Math.pow(soccerBalls[k].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[k].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-          System.out.println("The balls that have collided are: " + "[" + (i + 1) + (k + 1) +"]");
-          return true;
-        }
-        break b1_outer;
-      }
-      for (int l = i + 3; i < soccerBalls.length; i++) {
-        if (Math.sqrt(Math.pow(soccerBalls[l].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[l].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-          System.out.println("The balls that have collided are: " + "[" + (i + 1) + (l + 1) +"]");
-          return true;
-        }
-        break b1_outer;
-      }
-    }
-
-  b2_outer: for (int i = 0; i < soccerBalls.length - 2; i++) {
-    for (int j = i + 1; j < soccerBalls.length; j++) {
-      if (Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-        System.out.println("The balls that have collided are: " + "[" + (i + 1) + (j + 1) +"]");
-        return true;
-      }
-      break b2_outer;
-    }
-    for (int k = i + 2; k < soccerBalls.length; k++) {
-      if(Math.sqrt(Math.pow(soccerBalls[k].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[k].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-        System.out.println("The balls that have collided are: " + "[" + (i + 1) + (k + 1) +"]");
-        return true;
-      }
-      break b2_outer;
     }
   }
+    
 
-  b3_outer: for (int i = 0; i < soccerBalls.length - 3; i++) {
-    for (int j = i + 1; j < soccerBalls.length; j++) {
-      if(Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-        System.out.println("The balls that have collided are: " + "[" + (i + 1) + (j + 1) +"]");
-        return true;
+/**
+   *  method to see if the sim should continue
+   *  we need at least one ball moving (in bounds) for the sim to continue
+   *
+   */
+   public boolean atLeastOneBallStillMoving() {
+      int oneBallMoving = 0;
+      for (int i = 0; i < soccerBalls.length; i++) {
+         if (soccerBalls[i].isStillMoving() == true) {
+            oneBallMoving++;
+         }
       }
-      break b3_outer;
-    }
-  }
-return false;
-}
+      if (oneBallMoving > 0) {
+        checkSimToRun = true;
+      }
+      if (oneBallMoving <= 0) {
+        checkSimToRun = false;
+      }
+      return checkSimToRun;
+   }
+
 
 
   /**
@@ -231,7 +226,7 @@ return false;
     System.out.println();
 
     myPSS.validateArgsAndSetupSim(args);
-    myPSS.collisionCheck();
-    myPSS.report();
+    myPSS.simUpdate();
+
   }
 }

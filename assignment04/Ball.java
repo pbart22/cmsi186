@@ -75,13 +75,13 @@ public class Ball {
    *  @return  double-precision two-element array of X and Y location values
    */
    public double getPosition(String xy) {
-    if(xy.equals("x") || xy.equals("X")) {
-      return ballLocation[X_INDEX];
-    } else if (xy.equals("y") || xy.equals("Y")) {
-      return ballLocation [Y_INDEX];
-    } else {
-      throw new IllegalArgumentException("Must specify if you want x or y location");
-    }
+      if ( xy.equals("x") || xy.equals("X")) {
+        return ballLocation[X_INDEX];
+      } else if (xy.equals("y") || xy.equals("Y ")) {
+        return ballLocation[Y_INDEX];
+      } else {
+        throw new IllegalArgumentException("Must Specify if you want the x or y location");
+      }
   }
     
 
@@ -111,7 +111,8 @@ public class Ball {
       if (ballLocation[X_INDEX] < (-playgroundWidth/2) || ballLocation[X_INDEX] > playgroundHeight/2 || ballLocation[Y_INDEX] < (-playgroundHeight/2) || ballLocation[Y_INDEX] > playgroundHeight/2) {
         ballSpeed[X_INDEX] = 0;
         ballSpeed[Y_INDEX] = 0;
-        return true;
+        outOfBounds = true;
+        return outOfBounds;
       }
 
       return false;
@@ -123,10 +124,13 @@ public class Ball {
    *  @return  double-precision two element array of new velocity values
    */
    public double[] updateSpeedsForOneTick( double timeSlice ) {
+     for (int i = 0;  i < timeSlice; i++){
       // Update x index of ballSpeed
       ballSpeed[X_INDEX] *= Math.pow(FRICTION_COEFFICIENT, timeSlice);
       // Update y index of ballSpeed
-      ballSpeed[Y_INDEX] *= Math.pow(FRICTION_COEFFICIENT, timeSlice);
+      ballSpeed[Y_INDEX] *= Math.pow(FRICTION_COEFFICIENT, timeSlice);      
+     }
+
       return ballSpeed;
    }
 
@@ -135,10 +139,15 @@ public class Ball {
    *  @param timeSlice     double-precision value of time slace for simulation
    */
    public void move( double timeSlice ) {
+    for (int i = 0; i < timeSlice; i++){
       // Update x index of ballLocation
       ballLocation[X_INDEX] += ballSpeed[X_INDEX] * timeSlice;
       // Update y index of ballLocation
       ballLocation[Y_INDEX] += ballSpeed[Y_INDEX] * timeSlice;
+      // Update Velocity
+      updateSpeedsForOneTick(timeSlice);      
+    }
+
    }
 
   /**
@@ -157,12 +166,13 @@ public class Ball {
       //  Out of bounds
       // OR
       // at rest
-      if (this.isStillMoving()) {
-        return "Location: [" + dfl.format(ballLocation[X_INDEX]) + "," + dfl.format(ballLocation[Y_INDEX]) + "]" + " Speed: [" + dfs.format(ballSpeed[X_INDEX]) + "," + dfs.format(ballSpeed[Y_INDEX]) + "]";
-      } else {
+      if (isStillMoving() == false) {
         return "Location: [" + dfl.format(ballLocation[X_INDEX]) + "," + dfl.format(ballLocation[Y_INDEX]) + "]" + " Speed: Ball is at rest.";
+      } else if (outOfBounds == true) {
+        return "Ball is out of bounds at " + "Location: [" + dfl.format(ballLocation[X_INDEX]) + "," + dfl.format(ballLocation[Y_INDEX]) + "]";
+      } else {
+        return "Location: [" + dfl.format(ballLocation[X_INDEX]) + "," + dfl.format(ballLocation[Y_INDEX]) + "]" + " Speed: [" + dfs.format(ballSpeed[X_INDEX]) + "," + dfs.format(ballSpeed[Y_INDEX]) + "]"; 
       }
-      
    }
 
   /**
@@ -184,17 +194,17 @@ public class Ball {
       System.out.println("What about a 10x10 sized playground?" + " " + b1.isBallOutOfBounds(10,10));
       System.out.println("What about a 100x150 sized Playground?" + " " + b1.isBallOutOfBounds(100, 150));
       System.out.println("Is Ball b1 still moving?" + " " + b1.isStillMoving());
-      System.out.println("The current Position of Ball b1 is: " + "[" + b1.getPosition("x") + "]" + "[" + b1.getPosition("y") + "]");
+      System.out.println("The current Position of Ball b1 is: " + "[" + b1.getPosition("x") + "," + b1.getPosition("y") + "]");
 
       System.out.println( "\n   Testing the Ball class b2................" );
       Ball b2 = new Ball(12.0, 75.0, 13.0, 10.0);
 
       System.out.println("Ball b2: " + b2.toString());
-      System.out.println("The Current Position of Ball b2 is: " + "[" + b2.getPosition("x") + "]" + "[" + b2.getPosition("y") + "]");
+      System.out.println("The Current Position of Ball b2 is: " + "[" + b2.getPosition("x") + "," + b1.getPosition("y") + "]");
       b2.move(2.0);
-      System.out.println("The New Position of Ball b2 after move of 2.0 is: " + "[" + b2.getPosition("x") + "]" + "[" + b2.getPosition("y") + "]");
+      System.out.println("The New Position of Ball b2 after move of 2.0 is: " + "[" + b2.getPosition("x") + "," + b1.getPosition("y") + "]");
       b2.move(12.2);
-      System.out.println("The New Position of Ball b2 after move of 12.2 is: " + "[" + b2.getPosition("x") + "]" + "[" + b2.getPosition("y") + "]");
+      System.out.println("The New Position of Ball b2 after move of 12.2 is: " + "[" + b2.getPosition("x") + "," + b1.getPosition("y") + "]");
       b2.updateSpeedsForOneTick(15.6);
       System.out.println("Ball b2 updated speeds after tick of 15.2: " + "[" + b2.getSpeed("x") + "]" + "[" + b2.getSpeed("y") + "]");
       b2.updateSpeedsForOneTick(4);
