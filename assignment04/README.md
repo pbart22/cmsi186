@@ -22,13 +22,3 @@ Simultaneously, on a perfectly flat playground, at time 00:00:00.0 (hrs:mins:sec
     <code>java SoccerSim 300 300 -1 -2 5 10 3 6 10.0</code>
 
     which indicates one ball initially at (300, 300), moving at the rate of one foot west and two feet south per second; just one other ball initially at (5, 10), moving at the rate of three feet east and six feet north per second; with the simulation to be driven by a ten-second time slice.
-1. As in Part One, <code>ClockSolver</code> there will be some natural opportunities for using Java objects. For example, you will probably want to reuse some portion of your Clock class, along with a new public class Ball.
-1. Although you may not collaborate with classmates about the code itself, you are encouraged to add to the construction of test cases for the simulation.
-1. You can compare your program's results with Dr. Dorin's Simulation — just download "Ball.class" and "Timer.class" and "SoccerSim.class", then run SoccerSim in the usual way.
-
-Notes:
-
-1. The field size can be anything you want, big or small, in feet or light years, with the stipulation that it must be big enough so that placing a random number of balls at the start doesn't cause the simulation to immediately end.
-1. The pole must be located on the field somewhere, but it's up to you as to where. It can be at a random location, a fixed location, and may have any dimensions you like, from a point up to the size of a ball [radius 4.45 inches].
-
-Submission Guidelines: Make a sub-directory in your repository as mentioned above, called "homework04" and commit your source code into it. DON'T FORGET TO ADD A COMMIT COMMENT!""
