@@ -41,10 +41,6 @@ public class PlaygroundSoccerSim {
   private Ball[] soccerBalls = null;
   //    - clock
   private Clock c = new Clock();
-  private int[] ballsCollided;
-  private int ball1Collided = 0;
-  private int ball2Collided = 0;
-  private int ball3Collided = 0;
 
   // You can put a private static final String here that includes the intro message
   //  or how to use the program
@@ -132,11 +128,11 @@ public class PlaygroundSoccerSim {
         System.out.println("Ball" + i + " " + "Progress: " + soccerBalls[i].toString());
         simUpdate();
       } 
-       DecimalFormat dfl = new DecimalFormat("#0.00");
-        DecimalFormat dfs = new DecimalFormat("#0.0000");
-        System.out.println("Ball" + i + " " + "is out of Bounds or has Stopped moving at time: " + c.toString() + " " + "location: " + "[" + dfl.format(soccerBalls[i].getPosition("x")) + ", " + dfl.format(soccerBalls[i].getPosition("y")) + "]" 
-          + " " + "speed: " + "[" + dfs.format(soccerBalls[i].getSpeed("x")) + ", " + dfs.format(soccerBalls[i].getSpeed("y")) + "]");
-        System.out.println();
+      System.out.println();
+      DecimalFormat dfl = new DecimalFormat("#0.00");
+      DecimalFormat dfs = new DecimalFormat("#0.0000");
+      System.out.println("Ball" + i + " " + "is out of Bounds or has Stopped moving at time: " + c.toString() + " " + "location: " + "[" + dfl.format(soccerBalls[i].getPosition("x")) + ", " + dfl.format(soccerBalls[i].getPosition("y")) + "]" 
+        + " " + "speed: " + "[" + dfs.format(soccerBalls[i].getSpeed("x")) + ", " + dfs.format(soccerBalls[i].getSpeed("y")) + "]");
     }
    }
 
@@ -195,7 +191,7 @@ double ballRadius = 4.45;
       }
     }
 
-  b2_outer: for (int i = 1; i < soccerBalls.length - 2; i++) {
+  b2_outer: for (int i = 0; i < soccerBalls.length - 2; i++) {
     for (int j = i + 1; j < soccerBalls.length; j++) {
       if (Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
         System.out.println("The balls that have collided are: " + "[" + (i + 1) + (j + 1) +"]");
@@ -205,8 +201,6 @@ double ballRadius = 4.45;
     }
     for (int k = i + 2; k < soccerBalls.length; k++) {
       if(Math.sqrt(Math.pow(soccerBalls[k].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[k].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-        ball2Collided = i;
-        ballsCollided[1] = ball2Collided;
         System.out.println("The balls that have collided are: " + "[" + (i + 1) + (k + 1) +"]");
         return true;
       }
@@ -214,11 +208,9 @@ double ballRadius = 4.45;
     }
   }
 
-  b3_outer: for (int i = 2; i < soccerBalls.length - 3; i++) {
+  b3_outer: for (int i = 0; i < soccerBalls.length - 3; i++) {
     for (int j = i + 1; j < soccerBalls.length; j++) {
       if(Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
-        ball3Collided = i;
-        ballsCollided[3] = ball3Collided;
         System.out.println("The balls that have collided are: " + "[" + (i + 1) + (j + 1) +"]");
         return true;
       }
