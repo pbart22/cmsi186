@@ -148,6 +148,7 @@ public class PlaygroundSoccerSim {
     while (checkSimToRun == true) {
       for (int i = 0; i < soccerBalls.length; i++) {
         soccerBalls[i].move(timeSlice);
+        soccerBalls[i].updateSpeedsForOneTick(timeSlice);
       }
       report();
       collisionCheck();

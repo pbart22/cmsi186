@@ -143,9 +143,7 @@ public class Ball {
       // Update x index of ballLocation
       ballLocation[X_INDEX] += ballSpeed[X_INDEX] * timeSlice;
       // Update y index of ballLocation
-      ballLocation[Y_INDEX] += ballSpeed[Y_INDEX] * timeSlice;
-      // Update Velocity
-      updateSpeedsForOneTick(timeSlice);      
+      ballLocation[Y_INDEX] += ballSpeed[Y_INDEX] * timeSlice;     
     }
 
    }
