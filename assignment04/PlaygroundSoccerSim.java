@@ -274,7 +274,7 @@ public class PlaygroundSoccerSim {
    public boolean atLeastOneBallStillMoving() {
       int oneBallMoving = 0;
       for (int i = 0; i < soccerBalls.length; i++) {
-         if (soccerBalls[i].isStillMoving() == true) {
+         if (soccerBalls[i].isStillMoving() == true && soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH, DEFAULT_PLAYGROUND_HEIGHT) == false) {
             oneBallMoving++;
          }
       }
