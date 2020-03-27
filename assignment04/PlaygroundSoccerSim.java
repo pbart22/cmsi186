@@ -146,15 +146,15 @@ public class PlaygroundSoccerSim {
     //  - if the ball is not out of bounds and not at rest, move the ball
     //  - if the ball is out of bounds after the move or at rest, set the ball out of bounds or at rest
     while (checkSimToRun == true) {
-      report();
-      collisionCheck();
-      atLeastOneBallStillMoving();
       for (int i = 0; i < soccerBalls.length; i++) {
         soccerBalls[i].move(timeSlice);
-      } 
+      }
+      report();
+      collisionCheck();
+      atLeastOneBallStillMoving(); 
 
       }
-
+      // final report at the end of simulation
       report();
     }
   /**
@@ -171,13 +171,13 @@ public class PlaygroundSoccerSim {
     // if it returns an array of integers, perhaps the array should contain the indexes
     // of the two balls that collided
     double ballRadius = 4.45;
-    collideCheck: for (int i = 0; i < soccerBalls.length - 1; i++) {
+    collideCheck1: for (int i = 0; i < soccerBalls.length - 1; i++) {
       for (int j = i + 1; j < soccerBalls.length; j++) {
         // Skipping any balls that are out of bounds
         if (soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
           i++;
         }
-        if (soccerBalls[j].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true){
+        if (soccerBalls[j].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
           j++;
         }
         // checking for collision and updating variables if there was one
@@ -187,10 +187,83 @@ public class PlaygroundSoccerSim {
           collisionOccur = true;
           checkSimToRun = false;
         }
-        break collideCheck;
+        break collideCheck1;
       }
+        for (int k = i + 2; k < soccerBalls.length; k++) {
+          if (soccerBalls[k].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT)) {
+            k++;
+          }
+          if (Math.sqrt(Math.pow(soccerBalls[k].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[k].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
+            ballsCollided[0] = i;
+            ballsCollided[1] = k;
+            collisionOccur = true;
+            checkSimToRun = false;
+          }
+          break collideCheck1;
+        }
+        for (int l = i + 2; l < soccerBalls.length; l++) {
+          if (soccerBalls[l].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH, DEFAULT_PLAYGROUND_HEIGHT) == true) {
+            l++;
+          } 
+          if (Math.sqrt(Math.pow(soccerBalls[l].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[l].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
+            ballsCollided[0] = i;
+            ballsCollided[1] = l;
+            collisionOccur = true;
+            checkSimToRun = false;
+          }
+          break collideCheck1;
+        }
+    }
+
+    collideCheck2: for(int i = 0; i < soccerBalls.length - 2; i++) {
+      for (int j = i + 1; j < soccerBalls.length; j++) {
+       if (soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
+          i++;
+        }
+        if (soccerBalls[j].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
+          j++;
+        }
+        if (Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
+          ballsCollided[0] = i;
+          ballsCollided[1] = j;
+          collisionOccur = true;
+          checkSimToRun = false;
+        }
+        break collideCheck2;
+      }
+      for (int k = i + 2; k < soccerBalls.length; k++) {
+        if (soccerBalls[k].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
+          k++;
+        }
+        if (Math.sqrt(Math.pow(soccerBalls[k].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[k].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
+          ballsCollided[0] = i;
+          ballsCollided[1] = k;
+          collisionOccur = true;
+          checkSimToRun = false;
+
+          }
+          break collideCheck2;
+        }
+    }
+
+  collideCheck3: for (int i = 0; i < soccerBalls.length - 3; i++) {
+    for (int j = i + 1; j < soccerBalls.length; j++) {
+      if (soccerBalls[i].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
+        i++;
+      }
+      if (soccerBalls[j].isBallOutOfBounds(DEFAULT_PLAYGROUND_WIDTH,DEFAULT_PLAYGROUND_HEIGHT) == true) {
+        j++;
+      }
+      if (Math.sqrt(Math.pow(soccerBalls[j].getPosition("x") - soccerBalls[i].getPosition("x"), 2) + Math.pow(soccerBalls[j].getPosition("y") - soccerBalls[i].getPosition("y"), 2)) <= ballRadius) {
+        ballsCollided[0] = i;
+        ballsCollided[1] = j;
+        collisionOccur = true;
+        checkSimToRun = false;
+      }
+      break collideCheck3;
     }
   }
+}
     
 
 /**
