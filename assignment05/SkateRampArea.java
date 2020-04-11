@@ -27,71 +27,71 @@ public class SkateRampArea {
 	}
 
 
-/**
-* method to check the arguments passed by the user and sets up all of the values to calculate.
-* @param args String array
-* @throws IllegalArgumentException
-*/
-public void validateArgsAndSetupIntegration(String[] args) {
-	String[] functions = {"poly", "sin"};
-	function = args[0];
-	if (args.length < MINIMUM_ARG_COUNT) {
-		throw new IllegalArgumentException ("\nPlease enter a minimum of 3 arguments\n Proper Format Ex: <function name> <coefficients> <lowerBound> <upperBound> <(optional) percentage>");
-	} else if (function.contains(functions[0]) && args.length < MINIMUM_POLY_ARG_COUNT) {
-		throw new IllegalArgumentException ("\nIf function is poly, enter a minimum of 5 arguments\n Proper Format Ex: <function name (poly)> <coefficient> <coefficient> <lowerBound> <upperBound> <(optional) percentage>");
-	} else if (function.contains(functions[1]) && args.length < MINIMUM_ARG_COUNT) {
-		throw new IllegalArgumentException ("\nIf function is sin, enter a minimum of 3 arguments\n Proper Format Ex: <function name (sin)> <coefficient> <lowerBound> <upperBound> <(optional) percentage>");
-	} else if (!function.contains(functions[0]) || !function.contains(functions[1])) {
-		throw new IllegalArgumentException ("\n Make sure to enter the function name, either poly or sin");
-	}
+	/**
+	* method to check the arguments passed by the user and sets up all of the values to calculate.
+	* @param args String array
+	* @throws IllegalArgumentException
+	*/
+	public void validateArgsAndSetupIntegration(String[] args) {
+		String[] functions = {"poly", "sin"};
+		function = args[0];
+		if (args.length < MINIMUM_ARG_COUNT) {
+			throw new IllegalArgumentException ("\nPlease enter a minimum of 3 arguments\n Proper Format Ex: <function name> <coefficients> <lowerBound> <upperBound> <(optional) percentage>");
+		} else if (function.contains(functions[0]) && args.length < MINIMUM_POLY_ARG_COUNT) {
+			throw new IllegalArgumentException ("\nIf function is poly, enter a minimum of 5 arguments\n Proper Format Ex: <function name (poly)> <coefficient> <coefficient> <lowerBound> <upperBound> <(optional) percentage>");
+		} else if (function.contains(functions[1]) && args.length < MINIMUM_ARG_COUNT) {
+			throw new IllegalArgumentException ("\nIf function is sin, enter a minimum of 3 arguments\n Proper Format Ex: <function name (sin)> <coefficient> <lowerBound> <upperBound> <(optional) percentage>");
+		} else if (!function.contains(functions[0]) || !function.contains(functions[1])) {
+			throw new IllegalArgumentException ("\n Make sure to enter the function name, either poly or sin");
+		}
 
-	if (args[args.length - 1].contains("%")) {
-		if (function.contains(functions[0]) && args.length < 6) {
-			throw new IllegalArgumentException ("\nIf function is poly and percentage argument is present, then at least 6 arguments are required\n Proper Format Ex: <function name (poly)> <coefficient> <coefficient> <lowerBound> <upperBound> <percentage>");
-		} else if (function.contains(functions[1]) && args.length < 4) {
-			throw new IllegalArgumentException ("\nIf function is sin and percentage argument is present, then at least 4 arguments are required\n Proper Format Ex: <function name (sin)> <coefficient> <lowerBound> <upperBound> <percentage>");
+		if (args[args.length - 1].contains("%")) {
+			if (function.contains(functions[0]) && args.length < 6) {
+				throw new IllegalArgumentException ("\nIf function is poly and percentage argument is present, then at least 6 arguments are required\n Proper Format Ex: <function name (poly)> <coefficient> <coefficient> <lowerBound> <upperBound> <percentage>");
+			} else if (function.contains(functions[1]) && args.length < 4) {
+				throw new IllegalArgumentException ("\nIf function is sin and percentage argument is present, then at least 4 arguments are required\n Proper Format Ex: <function name (sin)> <coefficient> <lowerBound> <upperBound> <percentage>");
+			}
+			try {
+				epsilon = (Double.parseDouble(args[args.length - 1].substring(0, args[args.length -1].length() - 1))) / percentChange;
+				upperBound = Double.parseDouble(args[args.length - 2]);
+				lowerBound = Double.parseDouble(args[args.length - 3]);
+			} catch (IllegalArgumentException iae) {
+				System.out.println("\nCould not parse percent argument or Upperbond/lowerBound arguments into a double, make sure to enter integers only");
+			}
+			if (upperBound < lowerBound) {
+				throw new IllegalArgumentException ("\n Please enter lowerbound and upperBound arguments in numerical order\n Proper Format Ex: <function name> <coefficients> <lowerBound> <upperBound> <optional percentage>");
+			}
+		} else {
+			epsilon = DEFAULT_PERCENT;
+			try {
+				upperBound = Double.parseDouble(args[args.length - 1]);
+				lowerBound = Double.parseDouble(args[args.length - 2]);
+			} catch (IllegalArgumentException iae) {
+				System.out.println("Could not parse last two arguments into upperBound & lowerBound double, make sure to enter integers only");
+			}
 		}
-		try {
-			epsilon = (Double.parseDouble(args[args.length - 1].substring(0, args[args.length -1].length() - 1))) / percentChange;
-			upperBound = Double.parseDouble(args[args.length - 2]);
-			lowerBound = Double.parseDouble(args[args.length - 3]);
-		} catch (IllegalArgumentException iae) {
-			System.out.println("\nCould not parse percent argument or Upperbond/lowerBound arguments into a double, make sure to enter integers only");
-		}
-		if (upperBound < lowerBound) {
-			throw new IllegalArgumentException ("\n Please enter lowerbound and upperBound arguments in numerical order\n Proper Format Ex: <function name> <coefficients> <lowerBound> <upperBound> <optional percentage>");
-		}
-	} else {
-		epsilon = DEFAULT_PERCENT;
-		try {
-			upperBound = Double.parseDouble(args[args.length - 1]);
-			lowerBound = Double.parseDouble(args[args.length - 2]);
-		} catch (IllegalArgumentException iae) {
-			System.out.println("Could not parse last two arguments into upperBound & lowerBound double, make sure to enter integers only");
-		}
-	}
 
-	if (function.contains(functions[0]) && args[args.length - 1].contains("%")) {
-		try {
-			int numCoeff = args.length - 3;
-			coeffs = new double [numCoeff];
-			for (int i = 0; i < numCoeff; i++) {
-				coeffs[i] = Double.parseDouble(args[i + 1]);
+		if (function.contains(functions[0]) && args[args.length - 1].contains("%")) {
+			try {
+				int numCoeff = args.length - 3;
+				coeffs = new double [numCoeff];
+				for (int i = 0; i < numCoeff; i++) {
+					coeffs[i] = Double.parseDouble(args[i + 1]);
+				}
+			} catch (IllegalArgumentException iae) {
+				System.out.println("Could not find number of coefficients with the optional percent argument please only enter integers.");
 			}
-		} catch (IllegalArgumentException iae) {
-			System.out.println("Could not find number of coefficients with the optional percent argument please only enter integers.");
-		}
-	} else {
-		try {
-			int numCoeff = args.length - 2;
-			coeffs = new double [numCoeff];
-			for (int i = 0; i < numCoeff; i++) {
-				coeffs[i] = Double.parseDouble(args[i + 1]);
+		} else {
+			try {
+				int numCoeff = args.length - 2;
+				coeffs = new double [numCoeff];
+				for (int i = 0; i < numCoeff; i++) {
+					coeffs[i] = Double.parseDouble(args[i + 1]);
+				}
+			} catch(IllegalArgumentException iae) {
+				System.out.println("Could not find number of coefficients please only enter integers.");
 			}
-		} catch(IllegalArgumentException iae) {
-			System.out.println("Could not find number of coefficients please only enter integers.");
 		}
-	}
 	}
 
 
