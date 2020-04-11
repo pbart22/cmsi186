@@ -93,4 +93,33 @@ public void validateArgsAndSetupIntegration(String[] args) {
 		}
 	}
 	}
+
+
+	/**
+	* Method to calculate the area under a poly curve using the lower bound, upper bound, coefficients, and number of rectangles
+	* @param lb double the lower bound
+	* @param ub double the upper bound
+	* @param coefficients array that contains command line arguments
+	* @param n integer that represents number of rectangles needed in simulation
+	* @return the calulated area
+	*/
+	public double calculatePolyArea(double lb, double ub, double[] coefficients, int n) {
+		double sum = 0.0;
+		double yCoord = 0.0;
+		double xCoord = ((ub - lb) / n);
+		double startPoint = lb + (((ub - lb) / (n)) / 2);
+		double midPoint = 0.0;
+
+		for (int i = n; i > 0; i--) {
+			yCoord = 0.0;
+			midPoint = startPoint + ((n - i) * xCoord);
+
+			for (int j = 0; j < coefficients.length; j++) {
+				yCoord += (coefficients[i] * Math.pow(midPoint, i));
+			}
+			sum += yCoord * xCoord;
+		}
+		n++;
+		return sum; 
+	}
 }
