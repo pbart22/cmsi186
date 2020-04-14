@@ -16,7 +16,7 @@ public class SkateRampArea {
 	private static double percentChange = 100.0;
 	private static double lowerBound = 0.0;
 	private static double upperBound = 0.0;
-	// n represents the rectanges (int n) from the calculatePolyArea and calculateSinArea method arguments
+	// n represents the rectangles (int n) from the calculatePolyArea and calculateSinArea method arguments
 	private static int n = 0;
 	private static DecimalFormat df = new DecimalFormat("#00.0000");
 
@@ -38,7 +38,7 @@ public class SkateRampArea {
 		function = args[0];
 
 		// Allows runMyTests method to be ran without throwing an iae
-		if (args[0].equals("runTest")) {
+		if (function.equals("runTest")) {
 			return;
 		}
 
@@ -183,7 +183,7 @@ public class SkateRampArea {
 					currentArea += yCoord * xCoord;
 				} else {
 					yCoord = Math.sin(midpoint);
-					currentArea += yCoord *xCoord;
+					currentArea += yCoord * xCoord;
 				}
 			}
 
@@ -198,54 +198,208 @@ public class SkateRampArea {
 	}
 
 
+
+
 	/**
-	* Method that runs a test for poly arguments
+	* Method to reset the values back to zero
+	* needs to be used if you want to run multiple tests, otherwise all other test output will be the same as the first test output
 	*/
-	private void runMyTestPoly() {
+	private void reset(){
+		lowerBound = 0.0;
+		upperBound = 0.0;
+		epsilon = 0.0;
+		currentArea = 0.0;
+		previousArea = 0.0;
+		coeffs = new double [0];
+	}
+
+
+	/**
+	* Method that runs a tests on the program
+	*/
+	private void runMyTest() {
 		System.out.println("\n Testing Poly Arguments \n");
 
-		SkateRampArea polyTest = new SkateRampArea();
-		System.out.println("Test Arguments: {poly, 1.0, -2.1, 3.2, -10.0, +5.0} ");
-		System.out.println("Expected Result: parse through arguments and calulate area using DEFAULT_PERCENT");
+		SkateRampArea test = new SkateRampArea();
+		System.out.println("Test 1 Arguments: {poly, 1.0, -2.1, 3.2, -10.0, +5.0, 10.0%} ");
+		System.out.println("Testing valid function name with 6 arguments, should read last argument as a percentage, and assign other arguments to correct descriptors");
 		try { 
-			String[] test = {"poly", "1.0", "-2.1", "3.2", "-10.0", "+5.0"};
-			polyTest.validateArgsAndSetupIntegration(test);
+			String[] test1 = {"poly", "1.0", "-2.1", "3.2", "-10.0", "+5.0", "10.0%"};
+			test.validateArgsAndSetupIntegration(test1);
 			System.out.println(" Lower Bound: " + lowerBound);
 			System.out.println(" Upper Bound: " + upperBound);
 			for (int i = 0; i < coeffs.length; i++) {
 				System.out.println(" Coefficient: " + coeffs[i]);
 			}
-			System.out.println(" Percetage: " + epsilon);
-			System.out.println("\n The area under the curve is: " + df.format(polyTest.calculatePolyArea(lowerBound, upperBound, coeffs, n)) + "\n");
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculatePolyArea(lowerBound, upperBound, coeffs, n)) + "\n");
 		} catch (Exception e) {
-			System.out.println("Test Failed");
+			System.out.println("Test 1 Failed");
 		}
+		test.reset();
+
+		System.out.println("Test 2 Arguments: {poly, 1, 8, -2, 1, 4}");
+		System.out.println("Testing valid function name with 5 arguments, should use DEFAULT_PERCENT and assign arguments to correct descriptors");
+		try {
+			String[] test2 = {"poly", "1", "8", "-2", "1", "4"};
+			test.validateArgsAndSetupIntegration(test2);
+			System.out.println(" Lower Bound: " + lowerBound);
+			System.out.println(" Upper Bound: " + upperBound);
+			for (int i = 0; i < coeffs.length; i++) {
+				System.out.println(" Coefficient: " + coeffs[i]);
+			}
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculatePolyArea(lowerBound, upperBound, coeffs, n)) + "\n");
+		} catch (Exception e) {
+			System.out.println("Test 2 Failed");
+		}
+		test.reset();
+
+		System.out.println("Test 3 Arguments: {poly, 0, 1, 2}");
+		System.out.println("Testing valid function name with invalid number of total arguments, should throw an Exception");
+		try{
+			String[] test3 = {"poly", "0", "1", "2",};
+			test.validateArgsAndSetupIntegration(test3);
+			System.out.println(" Lower Bound: " + lowerBound);
+			System.out.println(" Upper Bound: " + upperBound);
+			for (int i = 0; i < coeffs.length; i++) {
+				System.out.println(" Coefficient: " + coeffs[i]);
+			}
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculatePolyArea(lowerBound, upperBound, coeffs, n)) + "\n");
+		} catch (Exception e) {
+			System.out.println("Test 3 Failed\n");
+		}
+		test.reset();
+
+		System.out.println("Test 4 Arguments: {poly, 2, 1, 2, 4, 1e-6%}");
+		System.out.println("Testing valid poly argument with 1e-6% format for the percentage, should run program and calculate the area");
+		try {
+			String[] test4 = {"poly", "2", "1", "2", "4", "1e-6%"};
+			test.validateArgsAndSetupIntegration(test4);
+			System.out.println(" Lower Bound: " + lowerBound);
+			System.out.println(" Upper Bound: " + upperBound);
+			for (int i = 0; i < coeffs.length; i++) {
+				System.out.println(" Coefficient: " + coeffs[i]);
+			}
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculatePolyArea(lowerBound, upperBound, coeffs, n)) + "\n");
+		} catch (Exception e) {
+			System.out.println("Test 4 Failed");
+		}
+		test.reset();
+
+		System.out.println("Test 5 Arguments: {poly, 2, 1, 2, 1e-6%");
+		System.out.println("Test should fail, missing upperBound argument, if % is present then minimum of 6 arguments is needed");
+		try {
+			String[] test5 = {"poly", "2", "1", "2", "1e-6%"};
+			test.validateArgsAndSetupIntegration(test5);
+			System.out.println(" Lower Bound: " + lowerBound);
+			System.out.println(" Upper Bound: " + upperBound);
+			for (int i = 0; i < coeffs.length; i++) {
+				System.out.println(" Coefficient: " + coeffs[i]);
+			}
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculatePolyArea(lowerBound, upperBound, coeffs, n)) + "\n");
+		} catch (Exception e) {
+			System.out.println("Test 5 Failed");
+		}
+		test.reset();
+		System.out.println("\nEnd of Poly Testing\n");
+		System.out.println("**********************");
+
+		System.out.println("\n Testing Sin Arguments \n");
+
+		System.out.println("Test 1 Arguments: {sin, -0.22, +3.77}");
+		System.out.println("Testing valid sin argument inputs, should not read any coefficients");
+		try {
+			String[] test1 = {"sin", "-0.22", "+3.77"};
+			test.validateArgsAndSetupIntegration(test1);
+			System.out.println(" Lower Bound: " + lowerBound);
+			System.out.println(" Upper Bound: " + upperBound);
+			for (int i = 0; i < coeffs.length; i++) {
+				System.out.println(" Coefficient: " + coeffs[i]);
+			}
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculateSinArea(lowerBound, upperBound, coeffs, n)) + "\n");
+		} catch (Exception e) {
+			System.out.println("Test 1 Failed\n");
+		}
+		test.reset();
+
+		System.out.println("Test 2 Arguments: {sin, -0.22, +3.77, 4.6, -2.0, 8.76, 20%}");
+		System.out.println("Testing valid sin argument inputs, with coefficients and percentage, should calculate area");
+		try {
+			String[] test2 = {"sin", "-0.22", "+3.77", "4.6", "-2.0", "8.76", "20%"};
+			test.validateArgsAndSetupIntegration(test2);
+			System.out.println(" Lower Bound: " + lowerBound);
+			System.out.println(" Upper Bound: " + upperBound);
+			for (int i = 0; i < coeffs.length; i++) {
+				System.out.println(" Coefficient: " + coeffs[i]);
+			}
+			System.out.println(" Percentage: " + epsilon);
+			System.out.println("\n The area under the curve is: " + df.format(test.calculateSinArea(lowerBound, upperBound, coeffs, n)) + "\n");
+		} catch (Exception e) {
+			System.out.println("Test 3 Failed\n");
+		}
+		test.reset();
+
+			System.out.println("Test 3 Arguments: {sin, -0.22, 20%}");
+			System.out.println("Invalid input, test should fail");
+			try {
+				String[] test3 = {"sin", "-0.22", "20%"};
+				test.validateArgsAndSetupIntegration(test3);
+				System.out.println(" Lower Bound: " + lowerBound);
+				System.out.println(" Upper Bound: " + upperBound);
+				for (int i = 0; i < coeffs.length; i++) {
+					System.out.println(" Coefficient: " + coeffs[i]);
+				}
+				System.out.println(" Percentage: " + epsilon);
+				System.out.println("\n The area under the curve is: " + df.format(test.calculateSinArea(lowerBound, upperBound, coeffs, n)) + "\n");
+			} catch (Exception e) {
+				System.out.println("Test 3 Failed\n");
+			}
+			test.reset();
+
+			System.out.println("Test 4 Arguments: {sin, -0.22, 13, 1.5%}");
+			System.out.println("Valid input with 4 arguments, should calculate area");
+			try {
+				String[] test4 = {"sin", "-0.22", "13", "1.5%"};
+				test.validateArgsAndSetupIntegration(test4);
+				System.out.println(" Lower Bound: " + lowerBound);
+				System.out.println(" Upper Bound: " + upperBound);
+				for (int i = 0; i < coeffs.length; i++) {
+					System.out.println(" Coefficient: " + coeffs[i]);
+				}
+				System.out.println(" Percentage: " + epsilon);
+				System.out.println("\n The area under the curve is: " + df.format(test.calculateSinArea(lowerBound, upperBound, coeffs, n)) + "\n");
+			} catch (Exception e) {
+				System.out.println("Test 4 Failed\n");
+			}
+			test.reset();
+
+			System.out.println("Test 5 Arguments: {sin, 12}");
+			System.out.println("invalid input should fail");
+			try {
+				String[] test5 = {"sin", "12"};
+				test.validateArgsAndSetupIntegration(test5);
+				System.out.println(" Lower Bound: " + lowerBound);
+				System.out.println(" Upper Bound: " + upperBound);
+				for (int i = 0; i < coeffs.length; i++) {
+					System.out.println(" Coefficient: " + coeffs[i]);
+				}
+				System.out.println(" Percentage: " + epsilon);
+				System.out.println("\n The area under the curve is: " + df.format(test.calculateSinArea(lowerBound, upperBound, coeffs, n)) + "\n");
+			} catch (Exception e) {
+				System.out.println("Test 5 Failed\n");
+			}
+			test.reset();
+
+			System.out.println("\n End of Testing \n");
+			System.out.println("*******************");
 	} 
 
 
-	/**
-	* Method that runs a test for sin arguments
-	*/
-	private void runMyTestSin() {
-		System.out.println("\n Testing Sin Arguments \n");
-
-		SkateRampArea sinTest = new SkateRampArea();
-		System.out.println("Test Arguments: {sin, -0.27, +3.55}");
-		System.out.println("Expected Result: parse through arguments and calulate area using DEFAULT_PERCENT and no coefficients");
-		try {
-			String[] test = {"sin", "-0.27", "+3.55"};
-			sinTest.validateArgsAndSetupIntegration(test);
-			System.out.println(" Lower Bound: " + lowerBound);
-			System.out.println(" Upper Bound: " + upperBound);
-			for (int i = 0; i < coeffs.length; i++) {
-				System.out.println(" Coefficient: " + coeffs[i]);
-			}
-			System.out.println(" Percetage: " + epsilon);
-			System.out.println("\n The area under the curve is: " + df.format(sinTest.calculateSinArea(lowerBound, upperBound, coeffs, n)) + "\n");
-		} catch (Exception e) {
-			System.out.println("Test Failed");
-		}
-	}
 
 	/**
 	* Main method to run program
@@ -257,8 +411,7 @@ public class SkateRampArea {
 		System.out.println("\n Welcome to the SkateRampArea Program!");
 		switch(args[0]) {
 
-			case "runTest": mySim.runMyTestPoly();
-							mySim.runMyTestSin();
+			case "runTest": mySim.runMyTest();
 							break;
 
 			case "poly":System.out.println("\n Lower Bound: " + lowerBound);
