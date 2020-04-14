@@ -129,7 +129,7 @@ public class SkateRampArea {
 	* @param ub double the upper bound
 	* @param coefficients array that contains command line arguments
 	* @param n integer that represents number of rectangles needed in simulation
-	* @return the calulated area
+	* @return the calculated area
 	*/
 	public double calculatePolyArea(double lb, double ub, double[] coefficients, int n) {
 		double midpoint = 0.0;
@@ -165,7 +165,7 @@ public class SkateRampArea {
 	* @param ub double the upper bound
 	* @param coefficients array that contains command line arguments
 	* @param n integer that represents number of rectangles needed in simulation
-	* @return the calulated area
+	* @return the calculated area
 	*/
 	public double calculateSinArea(double lb, double ub, double[] coefficients, int n) {
 		double midpoint = 0.0;
