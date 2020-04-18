@@ -748,9 +748,20 @@ public class BrobIntTester {
     catch (Exception e) { System.out.println("        Exception thrown:  "); }
 
     try {
-    	System.out.println("  Test 066: Testing equality between g31 and g5:   ");
+    	System.out.println("  Test 066: Testing equality between g31 and g5 using 'equals()':   ");
     	System.out.println("\n      expecting: true\n" + "      and got: " + g5.equals(g31));
     }
     catch (Exception e) { System.out.println("        Exception thrown:  "); }
+
+    try {
+    	System.out.println("   Test 067: Testing equality between g24 and g23 using 'equals()':  ");
+    	System.out.println("\n      expecting: false\n" + "       and got: " + g24.equals(g23));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  "); }
+
+
+
+    System.out.println("    Testing Add() Method\n" +
+                        "    ==================================" );
    }
 }
