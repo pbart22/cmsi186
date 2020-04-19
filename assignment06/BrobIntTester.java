@@ -616,9 +616,9 @@ public class BrobIntTester {
     /**
     * Start of personally created BrobInt tests
     */
-    System.out.println("    Start of Personal Testing\n" +
+    System.out.println("\n\n    Start of Personal Testing\n" +
                         "    ==================================" );
-    System.out.println("    Testing CONSTRUCTOR, Equals(), and CONSTANTS\n" +
+    System.out.println("\n\n    Testing CONSTRUCTOR, Equals(), and CONSTANTS\n" +
                         "    ==========================================" );
     try {
     	System.out.println("   Test 053: Making  Twenty-First BrobInt [g21]: ");
@@ -761,7 +761,7 @@ public class BrobIntTester {
 
 
 
-    System.out.println("    Testing Add() Method\n" +
+    System.out.println("\n\n   Testing Add() Method\n" +
                         "    ==================================" );
     try {
       System.out.println("   Test 068: Making Twenty-Nineth and Thirtyth BrobInt:  ");
@@ -884,9 +884,9 @@ public class BrobIntTester {
     }
     catch (Exception e) { System.out.println("        Exception thrown:  Invalid Arguments"); }
 
-   
 
-    System.out.println("    Testing Add() Method\n" +
+
+    System.out.println("\n\n    Testing Add() Method\n" +
                         "    ==================================" );
 
    }
