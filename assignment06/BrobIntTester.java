@@ -681,14 +681,14 @@ public class BrobIntTester {
     	g25 = new BrobInt(g25String);
     	System.out.println("\n      expecting: thrown error\n" + "      Instead got: " + g25.toString());
     }
-    catch (Exception e) { System.out.println("        Exception thrown: Invalid Argument  "); }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
 
     try {
     	System.out.println("\n   Test 060: Attempt at making BrobInt with Invlaid argument ['Good Bye']:  ");
     	g26 = new BrobInt(g26String);
     	System.out.println("\n       expecting: thrown error\n" + "      Instead got: " + g25.toString());
     }
-    catch (Exception e) {System.out.println("        Exception thrown:  Invalid Argument"); }
+    catch (Exception e) {System.out.println("        Exception thrown:  " + e.toString()); }
 
     try {
     	System.out.println("\n  Test 061: Creating Twenty-Fifth BrobInt: ");
@@ -869,7 +869,7 @@ public class BrobIntTester {
       System.out.println("      expecting: thrown exception" + "\n" + 
                      "            and got: " + g29.add(g28));
     }
-    catch (Exception e) { System.out.println("        Exception thrown:  Invalid Argument"); }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
 
     try {
       System.out.println("\n   Test 081: Adding g31 and g5 [0000 + 0]:  ");
@@ -882,7 +882,7 @@ public class BrobIntTester {
       System.out.println("      expecting: thrown Execption" + "\n" +
                      "            and got: " + g26.add(g25));
     }
-    catch (Exception e) { System.out.println("        Exception thrown:  Invalid Arguments"); }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
 
 
 
@@ -956,7 +956,7 @@ public class BrobIntTester {
          System.out.println("      expecting: 282" + "\n" +
                         "            and got: " + g38.subtract(g28));
       }
-      catch (Exception e) { System.out.println("        Exception thrown:  Invalid Argument"); }
+      catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
 
       System.out.println("\n    Test 091: Subtract g26 take away g29 ['Good day' - 1!@#4%5] using bytes:  ");
       try {
@@ -970,7 +970,7 @@ public class BrobIntTester {
          System.out.println("      expecting: thrown exception" + "\n" +
                         "           and got: " + g29.subtract(g33));
       }
-      catch (Exception e) { System.out.println("        Exception thrown:  Invalid Argument"); }
+      catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
 
       System.out.println("\n    Test 093: Subtract g35 take away g33 [8989 - 2300] using bytes:  ");
       try {
@@ -1071,5 +1071,171 @@ public class BrobIntTester {
                      "            and got: " + g34.multiply(g39));
     }
     catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+
+    System.out.println("\n\n    Testing divide() Method\n" +
+                        "    ==================================" );
+
+    System.out.println("\n    Test 105: Dividing g33 by g30 [2300 / 4]:  ");
+    try {
+      System.out.println("      expecting: 575" + "\n" +
+                    "             and got: " + g33.divide(g30));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 106: Dividing g32 by g40 [100000000 / 435]:  ");
+    try {
+      System.out.println("      expecting: 229885.057" + "\n" +
+                    "             and got: " + g32.divide(g40));
+    }
+    catch (Exception e) {System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 107: Dividing g31 by g35 [ 0000 / 8989]:  ");
+    try {
+      System.out.println("      expecting: 0" + "\n" +
+                     "            and got: " + g31.divide(g35));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 108: Dividing g33 by g35 [2300 / 0000]:  ");
+    try {
+      System.out.println("      expecting: thrown error" + "\n" +
+                     "            and got: " + g33.divide(g35));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 109: Dividing g24 by g23 [-23424325 / 45342332]:  ");
+    try {
+      System.out.println("      expecting: -0.5166105" + "\n" +
+                     "            and got: " + g24.divide(g23));
+    }
+    catch (Exception e) { System.out.println("       Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 110: g22 by g23 [too large to list]:  ");
+    try {
+      System.out.println("      expecting: 2.7232474e+49" + "\n" +
+                     "            and got: " + g22.divide(g23));
+    }
+    catch (Exception e) {System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 111: Dividing g34 by g36 [-4583 / -990]:  ");
+    try {
+      System.out.println("      expecting: 4.62929293" + "\n" +
+                     "            and got: " + g34.divide(g36));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 112: Dividing g29 by g39 [1!@#4%5 / 2]:  ");
+    try {
+      System.out.println("      expecting: thrown exception" + "\n" +
+                     "            and got: " + g29.divide(g39));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 113: Dividing g30 by g39 [4 / 2]:  ");
+    try {
+      System.out.println("      expecting: 2" + "\n" +
+                     "            and got: " + g30.divide(g39));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 114: Dividing g25 by g40 ['' / 435]:  ");
+    try {
+      System.out.println("      expecting: thrown exception" + "\n" +
+                     "            and got: " + g25.divide(g40));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 115: Divding g37 by g26 [00123 / 'Good day']:  ");
+    try {
+      System.out.println("      expecting: thrown exception" + "\n" +
+                     "            and got: " + g37.divide(g26));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 116: Dividing g38 by g37 [467 / 00123]:  ");
+    try {
+      System.out.println("      expecting: 3.79674797" + "\n" +
+                     "            and got: " + g38.divide(g37));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+
+    System.out.println("\n\n    Testing remainder() Method\n" +
+                        "    ==================================" );
+
+    System.out.println("\n    Test 117: Modding g33 by g28 [2300 % 185]:  ");
+    try {
+      System.out.println("      expecting: 80" + "\n" +
+                     "            and got: " + g33.remainder(g28));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 118: Modding g23 by g34 [45342332 % -4583]:  ");
+    try {
+      System.out.println("      expecting: 2713" + "\n" +
+                     "            and got: " + g23.remainder(g34));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 119: Modding g28 by g27 [185 % -185]:  ");
+    try {
+      System.out.println("      expecting: 0" + "\n" +
+                     "            and got: " + g28.remainder(g27));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 120: Modding g30 by g26 [4 % 'Good day']:  ");
+    try {
+      System.out.println("      expecting: thrown exception" +"\n" +
+                     "            and got: " + g30.remainder(g26));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 121: Modding g32 by g37 [100000000 % 00123]:  ");
+    try {
+      System.out.println("      expecting: 23" + "\n" +
+                     "            and got: " + g32.remainder(g37));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 122: Modding g39 by g30 [2 % 4]"  );
+    try {
+      System.out.println("      expecting: 2" + "\n" +
+                     "            and got: " + g39.remainder(g30));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 123: Modding g33 by g29 [2300 % 1!@#4%5]:  ");
+    try {
+      System.out.println("      expecting: thrown exception" + "\n" +
+                     "            and got: " + g33.remainder(g29));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 124: Modding g34 by g36 [-4583 % -990]:  ");
+    try {
+      System.out.println("      expecting: -623" + "\n" +
+                     "            and got: " + g34.remainder(g36));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 125: Modding g21 by g40 [toolarge to list]:  ");
+    try {
+      System.out.println("      expecting: 171" + "\n" +
+                     "            and got: " + g21.remainder(g40));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 126: Modding g23 by g24 [45342332 % -23424352]:  ");
+    try {
+      System.out.println("      expecting: 21917980" + "\n" +
+                     "            and got: " + g23.remainder(g24));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+
+    System.out.println("\n\n    End of Personal Tests\n" +
+                        "    ==================================" ); 
    }
 }
