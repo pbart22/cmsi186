@@ -981,5 +981,95 @@ public class BrobIntTester {
 
     System.out.println("\n\n    Testing multiply() Method\n" +
                         "    ==================================" );
+
+    System.out.println("\n    Test 094: Multiplying g33 by g35 [2300 * 8989]:  ");
+    try {
+      System.out.println("      expecting: 20674700" + "\n" +
+                     "            and got: " + g33.multiply(g35));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 095: Multiplying g23 by g24 [45342332 * -23424325]:  ");
+    try {
+      System.out.println("      expecting: -1.062lle15" + "\n" +
+                     "            and got: " + g23.multiply(g24));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 096: Multiplying g28 by g27 [185 * -185]:  ");
+    try {
+      System.out.println("      expecting: -34225" + "\n" +
+                     "            and got: " + g28.multiply(g27));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 097: Multiplying g30 by g38 [4 * 467]:  ");
+    try {
+      System.out.println("      expecting: 1868" + "\n" +
+                     "            and got: " + g30.multiply(g38));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 098: Multiplying g27 by g36 [-185 * -990:  ");
+    try {
+      System.out.println("      expecting: 183150" + "\n" +
+                     "            and got: " + g27.multiply(g36));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    try {
+      System.out.println("\n    Test 099: Making Thrity-Sixth and Thirty-Seventh BrobInt:  ");
+      g39 = new BrobInt(g39String);
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  "); }
+    try {
+      System.out.println("      expecting: " + BrobInt.TWO + "\n" +
+                     "            and got: " + g39.toString());
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  "); }
+    try {
+      g40 = new BrobInt(g40String);
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  "); }
+    try {
+      System.out.println("      expecting: " + g40String + "\n" +
+                     "            and got: " + g40.toString());
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  "); }
+
+    System.out.println("\n    Test 100: Multiplying g39 by g40 [2 * 435]:  ");
+    try {
+      System.out.println("      expecting: 870" + "\n" +
+                     "            and got: " + g39.multiply(g40));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 101: Multiplying g31 by g21 [to big to list]:  ");
+    try {
+      System.out.println("      expecting: 0" + "\n" +
+                     "            and got: " + g31.multiply(g21));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 102: Multiplying g25 by g26 ['' * 'Good day']:  ");
+    try {
+      System.out.println("      expecting: thrown exception" + "\n" +
+                     "            and got: " + g25.multiply(g26));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 103: Multiplying g26 by g29 ['Good day' + 1!@#4%5]:  ");
+    try {
+      System.out.println("      expecting: thrown exception" + "\n" +
+                     "            and got: " + g26.multiply(g29));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
+
+    System.out.println("\n    Test 104: Multiplying g34 by g39 [-4583 * 2]:  ");
+    try {
+      System.out.println("      expecting: -9166" + "\n" +
+                     "            and got: " + g34.multiply(g39));
+    }
+    catch (Exception e) { System.out.println("        Exception thrown:  " + e.toString()); }
    }
 }
