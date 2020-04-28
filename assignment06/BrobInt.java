@@ -43,6 +43,7 @@ public class BrobInt {
    public  String internalValue = "";        // internal String representation of this BrobInt
    public  byte   sign          = 0;         // "0" is positive, "1" is negative
    private String reversed      = "";        // the backwards version of the internal String representation
+   public byte[] reversedValues = null;   // Array to store the reversed string arguments
 
    private static final boolean DEBUG_ON = false;
    private static final boolean INFO_ON  = false;
@@ -54,7 +55,27 @@ public class BrobInt {
    *  @param  value  String value to make into a BrobInt
    */
    public BrobInt( String value ) {
-      	// Complete the code to accomplish what is in the javadoc text
+    int populateArray = 0;
+    internalValue = value;
+
+    if (internalValue.substring(0,1).equals('-')) {
+      sign = 1;
+      reversedValues = new byte[internalValue.length() - 1];
+      for (int i = internalValue.length(); i >= 2; i--) {
+        reversedValues[populateArray] = Byte.parseByte(internalValue.substring(i - 1, i));
+        reversed += internalValue.substring(i - 1, i);
+        populateArray++;
+      }
+    }
+    else {
+      reversedValues = new byte[internalValue.length()];
+      for (int i = internalValue.length(); i >= 1; i--) {
+        reversedValues[populateArray] = Byte.parseByte(internalValue.substring(i - 1, i));
+        reversed += internalValue.substring(i - 1, i);
+        populateArray++;
+      }
+    }
+
    }
 
   
@@ -66,7 +87,12 @@ public class BrobInt {
    *  note also that this must check for the '+' and '-' sign digits
    */
    public boolean validateDigits() {
-      throw new UnsupportedOperationException( "\n         Sorry, that operation is not yet implemented." );
+    for (int i = 0; i < reversedValues.length; i++) {
+      if (!Character.isDigit(reversedValues[i])) {
+        throw new IllegalArgumentException ("Invalid Arguments Entered");
+      }
+    }
+    return true;
    }
 
   /**
