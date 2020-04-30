@@ -303,7 +303,84 @@ public class BrobInt {
    *  @return BrobInt that is the product of the value of this BrobInt and the one passed in
    */
    public BrobInt multiply( BrobInt bint ) {
-      throw new UnsupportedOperationException( "\n         Sorry, that operation is not yet implemented." );
+    BrobInt min = null;
+    BrobInt max = null;
+    int carry = 0;
+    int count = 0;
+    int signType = 0;
+
+    //Checking sign
+    if ((this.sign == 1 && bint.sign == 1) || (this.sign == 0 && bint.sign == 0)) {
+      signType = 0;
+    } else {
+      signType = 1;
+    }
+
+    //Compareing bints to see which is larger
+    if (compareTo(bint) == 1) {
+      min = bint;
+      max = this;
+    } else if (compareTo(bint) == -1 || compareTo(bint) == 0) {
+      min = this;
+      max = bint;
+    }
+
+    //Detecting if either value is zero
+    if (max.allZeroDetect(max) == true || min.allZeroDetect(min) == true) {
+      return BrobInt.ZERO;
+    }
+
+    //Creating arrays to store values using max length, making up the difference in size by plugging in zeros
+    int[] minBint = new int [max.reversedValues.length];
+    int[] maxBint = new int [max.reversedValues.length];
+    for (int i = 0; i < maxBint.length; i++) {
+      minBint[i] = 000000000;
+      maxBint[i] = 000000000;
+    }
+    int maxIndex = max.reversedValues.length - 1;
+    for (int i = min.reversedValues.length - 1; i >= 0; i--) {
+      minBint[maxIndex] = min.reversedValues[i];
+      maxIndex--;
+    }
+    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
+      maxBint[i] = max.reversedValues[i];
+    }
+
+    //Multiplying the values together
+    long[] product = new long [max.reversedValues.length * 2];
+    for (int i = 0; i < product.length; i++) {
+      product[i] = 0;
+    }
+    int productIndex = product.length - 1;
+    for (int i = minBint.length - 1; i >= 0; i--) {
+      for (int j = maxBint.length - 1; j >= 0; j--) {
+        product[productIndex] += (long) maxBint[j] * (long) minBint[i] + (long) carry;
+        if (product[productIndex] <= 999999999) {
+          carry = 0;
+        } else {
+          while (product[productIndex] > 999999999) {
+            product[productIndex] -= 1000000000;
+            carry += 1;
+          }
+        }
+        productIndex--;
+      }
+      count++;
+      productIndex = max.reversedValues.length * 2 - count;
+    }
+
+    //Returning result
+    String result = "";
+    for (int i = 0; i < product.length; i++) {
+      result += product[i];
+    }
+    if (signType == 1) {
+      result = "-" + result;
+    }
+    BrobInt finalProduct = new BrobInt (result.toString());
+    finalProduct = removeLeadingZeros(finalProduct);
+    return finalProduct;
+
    }
 
   /** 
