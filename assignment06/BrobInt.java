@@ -55,27 +55,32 @@ public class BrobInt {
    *  @param  value  String value to make into a BrobInt
    */
    public BrobInt( String value ) {
-    int populateArray = 0;
-    internalValue = value;
 
-    if (internalValue.substring(0,1).equals('-')) {
+    //Checking for a sign character
+    char isSign = value.charAt(0);
+    if (isSign == '+'){
+      sign = 0;
+      this.internalValue = value.substring(1);
+    } else if (isSign == '-') {
       sign = 1;
-      reversedValues = new byte[internalValue.length() - 1];
-      for (int i = internalValue.length(); i >= 2; i--) {
-        reversedValues[populateArray] = Byte.parseByte(internalValue.substring(i - 1, i));
-        reversed += internalValue.substring(i - 1, i);
-        populateArray++;
-      }
-    }
-    else {
-      reversedValues = new byte[internalValue.length()];
-      for (int i = internalValue.length(); i >= 1; i--) {
-        reversedValues[populateArray] = Byte.parseByte(internalValue.substring(i - 1, i));
-        reversed += internalValue.substring(i - 1, i);
-        populateArray++;
-      }
+      this.internalValue = value.substring(1);
+    } else {
+      sign = 0;
+      this.internalValue = value;
     }
 
+    // validating digits and storing digits in an array and reversing them
+    validateDigits();
+    int index = reversedValues.length - 1;
+    for (int i = internalValue.length(); i > 0; i -= 9) {
+      int stop = i;
+      int start = stop - 9;
+      if (index == 0) {
+        start = 0;
+      }
+
+      reversedValues[index] = Byte.parseByte(internalValue.substring(start, stop));
+    }
    }
 
   
@@ -87,8 +92,8 @@ public class BrobInt {
    *  note also that this must check for the '+' and '-' sign digits
    */
    public boolean validateDigits() {
-    for (int i = 0; i < reversedValues.length; i++) {
-      if (!Character.isDigit(reversedValues[i])) {
+    for (int i = 0; i < internalValue.length(); i++) {
+      if (Character.isDigit(internalValue.charAt(i)) == false) {
         throw new IllegalArgumentException ("Invalid Arguments Entered");
       }
     }
@@ -105,7 +110,7 @@ public class BrobInt {
     BrobInt max = null;
     int carry = 0;
     int signType = 0;
-    
+
     //Checking if the sign is "-" for both and storing it so we can add it to our finalResult
     if (this.sign == 1 && bint.sign == 1) {
       signType = 1;
