@@ -181,7 +181,120 @@ public class BrobInt {
    *  @return BrobInt that is the difference of the value of this BrobInt and the one passed in
    */
    public BrobInt subtract( BrobInt bint ) {
-      throw new UnsupportedOperationException( "\n         Sorry, that operation is not yet implemented." );
+    BrobInt min = null;
+    BrobInt max = null;
+    int borrow = 0;
+    int signType = 0;
+
+    //Checking if argument is 0
+    if(this.compareTo(bint) == 0) {
+      return BrobInt.ZERO;
+    }
+
+    //Checking if signs are the same and determining which value is bigger
+    if (this.sign == 0 && bint.sign == 0) {
+      if (compareTo(bint) == 1) {
+        min = bint;
+        max = this;
+        signType = 0;
+      } else if (compareTo(bint) == -1) {
+        min = this;
+        max = bint;
+        signType = 1;
+      } else {
+        min = this;
+        max = bint;
+      }
+    }
+    if (this.sign == 1 && bint.sign == 1) {
+      if (compareTo(bint) == 1) {
+        min = bint;
+        max = this;
+        signType = 1;
+      } else if (compareTo(bint) == -1) {
+        min = this;
+        max = bint;
+        signType = 0;
+      } else {
+        min = this;
+        max = bint;
+      }
+    }
+
+    //If substracting a positive from a Negative then add the two values
+    if (this.sign == 1 && bint.sign == 0) {
+      signType = 1;
+      if (compareTo(bint) == 1) {
+        min = this;
+        max = bint;
+      } else if (compareTo(bint) == -1) {
+        min = bint;
+        max = this;
+      } else {
+        min = this;
+        max = bint;
+      }
+      return this.add(bint);
+    }
+
+    //If subtracting a negative from a positive then add the two values
+    if (this.sign == 0 && bint.sign == 1) {
+      signType = 0;
+      if (compareTo(bint) == 1) {
+        min = this;
+        max = bint;
+      } else if (compareTo(bint) == -1) {
+        min = bint;
+        max = this;
+      } else {
+        min = this;
+        max = bint;
+      }
+      return this.add(bint);
+    }
+
+    //Creating arrays to store values, both will be set to length of max
+    //Difference in size will be filled in by zeros
+    int[] minBint = new int [max.reversedValues.length];
+    int[] maxBint = new int [max.reversedValues.length];
+    for (int i = 0; i < maxBint.length; i++) {
+      minBint[i] = 000000000;
+      maxBint[i] = 000000000;
+    }
+    int maxIndex = max.reversedValues.length - 1;
+    for (int i = min.reversedValues.length - 1; i >= 0; i--) {
+      minBint[maxIndex] = min.reversedValues[i];
+      maxIndex--;
+    }
+    for (int i = max.reversedValues.length - 1; i >=0; i--) {
+      maxBint[i] = max.reversedValues[i];
+    }
+
+    //Subtracting the two values if value signs are the same
+    int[] difference = new int [max.reversedValues.length + 1];
+    int diffIndex = max.reversedValues.length;
+    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
+      difference[diffIndex] = maxBint[i] - minBint[i] - borrow;
+      if (difference[diffIndex] < 0) {
+        difference[diffIndex] -= 1;
+        borrow = 1000000000;
+      } else {
+        borrow = 0;
+      }
+      diffIndex--;
+    }
+
+    //returning results
+    String result = "";
+    for (int i = 0; i < difference.length; i++) {
+      result += difference[i];
+    }
+    if (signType == 1) {
+      result = "-" + result;
+    }
+    BrobInt finalDifference = new BrobInt (result.toString());
+    finalDifference = removeLeadingZeros(finalDifference);
+    return finalDifference;
    }
 
   /** 
