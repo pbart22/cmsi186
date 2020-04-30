@@ -77,19 +77,19 @@ public class BrobInt {
      if(DEBUG_ON){
        System.out.println("this.reversedValues.length: " + this.reversedValues.length);
      }
-     int count = reversedValues.length-1;
+     int index = reversedValues.length-1;
      for (int i = internalValue.length(); i > 0; i -= 9){
        int stop = i;
        int start = stop - 9;
-       if (count == 0){
+       if (index == 0){
          start = 0;
        }
        if(DEBUG_ON){
-         System.out.println("count: " + count + " || " + "stop: " + stop + " || " + "start: " + start);
+         System.out.println("index: " + index + " || " + "stop: " + stop + " || " + "start: " + start);
          System.out.println("substring: " + internalValue.substring(start, stop));
        }
-       reversedValues[count] = Integer.parseInt(internalValue.substring(start, stop));
-       count--;
+       reversedValues[index] = Integer.parseInt(internalValue.substring(start, stop));
+       index--;
      }
    }
 
