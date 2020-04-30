@@ -101,7 +101,73 @@ public class BrobInt {
    *  @return BrobInt that is the sum of the value of this BrobInt and the one passed in
    */
    public BrobInt add( BrobInt bint ) {
-      throw new UnsupportedOperationException( "\n         Sorry, that operation is not yet implemented." );
+    BrobInt min = null;
+    BrobInt max = null;
+    int carry = 0;
+    int signType = 0;
+    
+    //Checking if the sign is "-" for both and storing it so we can add it to our finalResult
+    if (this.sign == 1 && bint.sign == 1) {
+      signType = 1;
+    }
+
+    //Checking which value is bigger
+    if (compareTo(bint) == 1) {
+      min = bint;
+      max = this;
+    } else if (compareTo(bint) == -1 || compareTo(bint) == 0) {
+      min = this;
+      max = this;
+    }
+
+    //Checking to see if we are adding zeros
+    if (max.allZeroDetect(max) == true && min.allZeroDetect(min) == true) {
+      return BrobInt.ZERO;
+    }
+
+    //Creating arrays to store values, both arrays will be the same length as the max
+    // any difference in length will be offset by adding zeros into the empty spaces
+    int[] minBint = new int [max.reversedValues.length];
+    int[] maxBint = new int [max.reversedValues.length];
+    for (int i = 0; i < min.reversedValues.length; i++) {
+      minBint[i] = 000000000;
+      maxBint[i] = 000000000;
+    }
+    int maxIndex = max.reversedValues.length - 1;
+    for (int i = min.reversedValues.length - 1; i >= 0; i--) {
+      minBint[maxIndex] = min.reversedValues[i];
+      maxIndex--;
+    }
+    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
+      maxBint[i] = max.reversedValues[i];
+    }
+
+    //Adding the values together
+    int[] sum = new int [max.reversedValues.length + 1];
+    int sumIndex = max.reversedValues.length;
+    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
+      sum[sumIndex] = minBint[i] + maxBint[i] + carry;
+      if (sum[sumIndex] > 999999999) {
+        sum[sumIndex] -= 1000000000;
+        carry = 1;
+      } else {
+        carry = 0;
+      }
+      sumIndex--;
+    }
+
+    //returning results
+    String result = "";
+    for (int i = 0; i < sum.length; i++) {
+      result += sum[i];
+    }
+    if (signType == 1) {
+      result = "-" + result;
+    }
+    BrobInt finalResult = new BrobInt (result.toString());
+    finalResult = removeLeadingZeros(finalResult);
+    return finalResult;
+
    }
 
   /** 
