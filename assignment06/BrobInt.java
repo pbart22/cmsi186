@@ -43,7 +43,7 @@ public class BrobInt {
    public  String internalValue = "";        // internal String representation of this BrobInt
    public  byte   sign          = 0;         // "0" is positive, "1" is negative
    private String reversed      = "";        // the backwards version of the internal String representation
-   public byte[] reversedValues = null;   // Array to store the reversed string arguments
+   public int[] reversedValues = null;   // Array to store the reversed string arguments
 
    private static final boolean DEBUG_ON = false;
    private static final boolean INFO_ON  = false;
@@ -55,32 +55,42 @@ public class BrobInt {
    *  @param  value  String value to make into a BrobInt
    */
    public BrobInt( String value ) {
-
-    //Checking for a sign character
-    char isSign = value.charAt(0);
-    if (isSign == '+'){
-      sign = 0;
-      this.internalValue = value.substring(1);
-    } else if (isSign == '-') {
-      sign = 1;
-      this.internalValue = value.substring(1);
-    } else {
-      sign = 0;
-      this.internalValue = value;
-    }
-
-    // validating digits and storing digits in an array and reversing them
-    validateDigits();
-    int index = reversedValues.length - 1;
-    for (int i = internalValue.length(); i > 0; i -= 9) {
-      int stop = i;
-      int start = stop - 9;
-      if (index == 0) {
-        start = 0;
+      if(DEBUG_ON == true){
+        System.out.println("value: " + value);
       }
-
-      reversedValues[index] = Byte.parseByte(internalValue.substring(start, stop));
-    }
+     char signValue = value.charAt(0);
+     if (signValue == '+'){
+       sign = 0;
+       this.internalValue = value.substring(1);
+     } else if (signValue == '-'){
+       sign = 1;
+       this.internalValue = value.substring(1);
+     } else {
+       this.internalValue = value;
+       sign = 0;
+     }
+     validateDigits();
+     if(DEBUG_ON){
+       System.out.println("this.internalValue: " + this.internalValue);
+     }
+     this.reversedValues = new int[(internalValue.length()/9) + 1];
+     if(DEBUG_ON){
+       System.out.println("this.reversedValues.length: " + this.reversedValues.length);
+     }
+     int count = reversedValues.length-1;
+     for (int i = internalValue.length(); i > 0; i -= 9){
+       int stop = i;
+       int start = stop - 9;
+       if (count == 0){
+         start = 0;
+       }
+       if(DEBUG_ON){
+         System.out.println("count: " + count + " || " + "stop: " + stop + " || " + "start: " + start);
+         System.out.println("substring: " + internalValue.substring(start, stop));
+       }
+       reversedValues[count] = Integer.parseInt(internalValue.substring(start, stop));
+       count--;
+     }
    }
 
   
@@ -94,7 +104,7 @@ public class BrobInt {
    public boolean validateDigits() {
     for (int i = 0; i < internalValue.length(); i++) {
       if (Character.isDigit(internalValue.charAt(i)) == false) {
-        throw new IllegalArgumentException ("Invalid Arguments Entered");
+        throw new IllegalArgumentException("Invalid Arguments Entered");
       }
     }
     return true;
@@ -132,8 +142,8 @@ public class BrobInt {
 
     //Creating arrays to store values, both arrays will be the same length as the max
     // any difference in length will be offset by adding zeros into the empty spaces
-    int[] minBint = new int [max.reversedValues.length];
-    int[] maxBint = new int [max.reversedValues.length];
+    int[] minBint = new int[max.reversedValues.length];
+    int[] maxBint = new int[max.reversedValues.length];
     for (int i = 0; i < min.reversedValues.length; i++) {
       minBint[i] = 000000000;
       maxBint[i] = 000000000;
@@ -169,7 +179,7 @@ public class BrobInt {
     if (signType == 1) {
       result = "-" + result;
     }
-    BrobInt finalResult = new BrobInt (result.toString());
+    BrobInt finalResult = new BrobInt(result.toString());
     finalResult = removeLeadingZeros(finalResult);
     return finalResult;
 
@@ -234,7 +244,8 @@ public class BrobInt {
         min = this;
         max = bint;
       }
-      return this.add(bint);
+      BrobInt sumNeg = this.add(bint);
+      return sumNeg;
     }
 
     //If subtracting a negative from a positive then add the two values
@@ -250,13 +261,14 @@ public class BrobInt {
         min = this;
         max = bint;
       }
-      return this.add(bint);
+      BrobInt sumPositive = this.add(bint);
+      return sumPositive;
     }
 
     //Creating arrays to store values, both will be set to length of max
     //Difference in size will be filled in by zeros
-    int[] minBint = new int [max.reversedValues.length];
-    int[] maxBint = new int [max.reversedValues.length];
+    int[] minBint = new int[max.reversedValues.length];
+    int[] maxBint = new int[max.reversedValues.length];
     for (int i = 0; i < maxBint.length; i++) {
       minBint[i] = 000000000;
       maxBint[i] = 000000000;
@@ -292,7 +304,7 @@ public class BrobInt {
     if (signType == 1) {
       result = "-" + result;
     }
-    BrobInt finalDifference = new BrobInt (result.toString());
+    BrobInt finalDifference = new BrobInt(result.toString());
     finalDifference = removeLeadingZeros(finalDifference);
     return finalDifference;
    }
@@ -377,7 +389,7 @@ public class BrobInt {
     if (signType == 1) {
       result = "-" + result;
     }
-    BrobInt finalProduct = new BrobInt (result.toString());
+    BrobInt finalProduct = new BrobInt(result.toString());
     finalProduct = removeLeadingZeros(finalProduct);
     return finalProduct;
 
@@ -389,7 +401,46 @@ public class BrobInt {
    *  @return BrobInt that is the dividend of this BrobInt divided by the one passed in
    */
    public BrobInt divide( BrobInt bint ) {
-      throw new UnsupportedOperationException( "\n         Sorry, that operation is not yet implemented." );
+    BrobInt dividend = bint;
+    BrobInt divisor = this;
+    BrobInt d3;
+    BrobInt quotient = new BrobInt("0");
+    int index = 0;
+
+    //Checking if dividend is a zero
+    if (dividend.equals(BrobInt.ZERO)) {
+      throw new IllegalArgumentException("Cannot divide zero by a number");
+    }
+
+    //Comparing values
+    if (dividend.equals(divisor)) {
+      return BrobInt.ONE;
+    }
+
+    //Dividing the values
+    index = dividend.toString().length();
+    d3 = new BrobInt(divisor.toString().substring(0, index));
+    if (dividend.compareTo(d3) == 1) {
+      index++;
+      d3 = new BrobInt(divisor.toString().substring(0, index));
+    }
+    while (index <= divisor.toString().length()) {
+      while (d3.compareTo(dividend) == 1 || d3.compareTo(dividend) == 0) {
+        d3 = d3.subtract(dividend);
+        quotient = quotient.add(BrobInt.ONE);
+      }
+      if (index == divisor.toString().length()) {
+        break;
+      } else {
+        index++;
+      }
+      d3 = d3.multiply(BrobInt.TEN);
+      quotient = quotient.multiply(BrobInt.TEN);
+      BrobInt digit = new BrobInt(divisor.toString().substring(index - 1, index));
+      d3 = d3.add(digit);
+    }
+
+    return quotient;
    }
 
   /** 
@@ -398,8 +449,14 @@ public class BrobInt {
    *  @return BrobInt that is the remainder of division of this BrobInt by the one passed in
    */
    public BrobInt remainder( BrobInt bint ) {
-      throw new UnsupportedOperationException( "\n         Sorry, that operation is not yet implemented." );
-   }
+    BrobInt bint1 = this;
+    BrobInt bint2 = bint;
+    BrobInt result = bint1.subtract(bint1.divide(bint2).multiply(bint2));
+    if (result.equals(BrobInt.ZERO)) {
+      return BrobInt.ZERO;
+    }
+    return result;
+    }
 
   /** 
    *  Method to compare a BrobInt passed as argument to this BrobInt
@@ -474,7 +531,7 @@ public class BrobInt {
    *  @return String  which is the String representation of this BrobInt
    */
    public String toString() {
-      return internalValue;
+    return internalValue;
    }
 
   /**
