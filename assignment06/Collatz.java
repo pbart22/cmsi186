@@ -23,6 +23,6 @@
      }
    }
 
-   System.out.println("\nIt took " + i +  " iterations" + " to reach one\n");
+   System.out.println("\nIt took " + i +  " iterations" + " to reach 1!\n");
   }
 }
