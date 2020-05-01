@@ -17,6 +17,7 @@
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 import java.util.Arrays;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class BrobInt {
 
@@ -43,7 +44,9 @@ public class BrobInt {
    public  String internalValue = "";        // internal String representation of this BrobInt
    public  byte   sign          = 0;         // "0" is positive, "1" is negative
    private String reversed      = "";        // the backwards version of the internal String representation
-   public int[] reversedValues = null;   // Array to store the reversed string arguments
+   public DecimalFormat df = new DecimalFormat("000000000");  // Makes larger numbers easier to read
+   public int[] storedValues = null;          // Stores user input in an array
+   public int signType = 0;                  // variable to store sign if '-' so we can attach it to the result of our calculations if necessary
 
    private static final boolean DEBUG_ON = false;
    private static final boolean INFO_ON  = false;
@@ -55,45 +58,36 @@ public class BrobInt {
    *  @param  value  String value to make into a BrobInt
    */
    public BrobInt( String value ) {
-      if(DEBUG_ON == true){
-        System.out.println("value: " + value);
-      }
-     char signValue = value.charAt(0);
-     if (signValue == '+'){
+
+     // Checking for signs
+     if (value.charAt(0) == '+'){
        sign = 0;
        this.internalValue = value.substring(1);
-     } else if (signValue == '-'){
+     } else if (value.charAt(0) == '-'){
        sign = 1;
        this.internalValue = value.substring(1);
      } else {
        this.internalValue = value;
        sign = 0;
      }
+
+     // Checking of argumnets are valid and storing input in an array
      validateDigits();
-     if(DEBUG_ON){
-       System.out.println("this.internalValue: " + this.internalValue);
-     }
-     this.reversedValues = new int[(internalValue.length()/9) + 1];
-     if(DEBUG_ON){
-       System.out.println("this.reversedValues.length: " + this.reversedValues.length);
-     }
-     int index = reversedValues.length-1;
+     this.storedValues = new int[(internalValue.length()/9) + 1];
+     int input = storedValues.length - 1;
      for (int i = internalValue.length(); i > 0; i -= 9){
        int stop = i;
        int start = stop - 9;
-       if (index == 0){
+       if (input == 0){
          start = 0;
        }
-       if(DEBUG_ON){
-         System.out.println("index: " + index + " || " + "stop: " + stop + " || " + "start: " + start);
-         System.out.println("substring: " + internalValue.substring(start, stop));
-       }
-       reversedValues[index] = Integer.parseInt(internalValue.substring(start, stop));
-       index--;
+
+       storedValues[input] = Integer.parseInt(internalValue.substring(start, stop));
+       input--;
      }
+
    }
 
-  
    /**  
    *  Method to validate that all the characters in the value are valid decimal digits
    *  @return  boolean  true if all digits are good
@@ -101,13 +95,12 @@ public class BrobInt {
    *  note that there is no return false, because of throwing the exception
    *  note also that this must check for the '+' and '-' sign digits
    */
-   public boolean validateDigits() {
-    for (int i = 0; i < internalValue.length(); i++) {
-      if (Character.isDigit(internalValue.charAt(i)) == false) {
-        throw new IllegalArgumentException("Invalid Arguments Entered");
-      }
-    }
-    return true;
+   public void validateDigits() {
+     for (int i = 0; i < internalValue.length(); i++){
+       if(Character.isDigit(internalValue.charAt(i)) == false){
+         throw new IllegalArgumentException("Illegal Argument at character: " + i);
+       }
+     }
    }
 
   /**
@@ -116,73 +109,71 @@ public class BrobInt {
    *  @return BrobInt that is the sum of the value of this BrobInt and the one passed in
    */
    public BrobInt add( BrobInt bint ) {
-    BrobInt min = null;
-    BrobInt max = null;
-    int carry = 0;
-    int signType = 0;
+     BrobInt min = null;
+     BrobInt max = null;
+     int carry = 0;
 
-    //Checking if the sign is "-" for both and storing it so we can add it to our finalResult
-    if (this.sign == 1 && bint.sign == 1) {
-      signType = 1;
-    }
+     // Checking if the sign is '-' or both and storing it so we can add it to our finalResult if necessary
+     if (this.sign == 1 && bint.sign == 1) {
+       signType = 1;
+     }
 
-    //Checking which value is bigger
-    if (compareTo(bint) == 1) {
-      min = bint;
-      max = this;
-    } else if (compareTo(bint) == -1 || compareTo(bint) == 0) {
-      min = this;
-      max = this;
-    }
+     // Checking which value is bigger
+     if (compareTo(bint) == 1) {
+       min = bint;
+       max = this;
+     } else if ((compareTo(bint) == -1) || (compareTo(bint) == 0)) {
+       min = this;
+       max = bint;
+     }
 
-    //Checking to see if we are adding zeros
-    if (max.allZeroDetect(max) == true && min.allZeroDetect(min) == true) {
-      return BrobInt.ZERO;
-    }
+     // Checking to see if we are adding zeros
+     if((max.allZeroDetect(max) == true) && (min.allZeroDetect(min) == true)) {
+       return BrobInt.ZERO;
+     }
 
     //Creating arrays to store values, both arrays will be the same length as the max
     // any difference in length will be offset by adding zeros into the empty spaces
-    int[] minBint = new int[max.reversedValues.length];
-    int[] maxBint = new int[max.reversedValues.length];
-    for (int i = 0; i < min.reversedValues.length; i++) {
-      minBint[i] = 000000000;
-      maxBint[i] = 000000000;
-    }
-    int maxIndex = max.reversedValues.length - 1;
-    for (int i = min.reversedValues.length - 1; i >= 0; i--) {
-      minBint[maxIndex] = min.reversedValues[i];
-      maxIndex--;
-    }
-    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
-      maxBint[i] = max.reversedValues[i];
-    }
+     int[] minArray = new int[max.storedValues.length];
+     int[] maxArray = new int[max.storedValues.length];
+     for (int i = 0; i < maxArray.length; i++){
+       minArray[i] = 000000000;
+       maxArray[i] = 000000000;
+     }
+     int maxIndex = max.storedValues.length - 1;
+     for (int i = min.storedValues.length - 1; i >= 0; i--) {
+       minArray[maxIndex] = min.storedValues[i];
+       maxIndex--;
+     }
+     for (int i = max.storedValues.length - 1; i >= 0; i--) {
+       maxArray[i] = max.storedValues[i];
+     }
 
-    //Adding the values together
-    int[] sum = new int [max.reversedValues.length + 1];
-    int sumIndex = max.reversedValues.length;
-    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
-      sum[sumIndex] = minBint[i] + maxBint[i] + carry;
-      if (sum[sumIndex] > 999999999) {
-        sum[sumIndex] -= 1000000000;
-        carry = 1;
-      } else {
-        carry = 0;
-      }
-      sumIndex--;
-    }
+     // Adding the values together
+     int[] sum = new int[max.storedValues.length + 1];
+     int sumIndex = max.storedValues.length;
+     for (int i = max.storedValues.length - 1; i >= 0 ; i--) {
+       sum[sumIndex] = minArray[i] + maxArray[i] + carry;
+       if(sum[sumIndex] > 999999999) {
+         sum[sumIndex] -= 1000000000;
+         carry = 1;
+       } else {
+         carry = 0;
+       }
+       sumIndex--;
+     }
 
-    //returning results
-    String result = "";
-    for (int i = 0; i < sum.length; i++) {
-      result += sum[i];
-    }
-    if (signType == 1) {
-      result = "-" + result;
-    }
-    BrobInt finalResult = new BrobInt(result.toString());
-    finalResult = removeLeadingZeros(finalResult);
-    return finalResult;
-
+     // Returning results
+     String result = "";
+     for (int i = 0; i < sum.length; i++) {
+       result += df.format(sum[i]);
+     }
+     if(signType == 1){
+       result = "-" + result;
+     }
+     BrobInt totalSum = new BrobInt(result.toString());
+     totalSum = removeLeadingZeros(totalSum);
+     return totalSum;
    }
 
   /** 
@@ -191,122 +182,135 @@ public class BrobInt {
    *  @return BrobInt that is the difference of the value of this BrobInt and the one passed in
    */
    public BrobInt subtract( BrobInt bint ) {
-    BrobInt min = null;
-    BrobInt max = null;
-    int borrow = 0;
-    int signType = 0;
+     BrobInt min = null;
+     BrobInt max = null;
+     int borrow = 0;
 
-    //Checking if argument is 0
-    if(this.compareTo(bint) == 0) {
-      return BrobInt.ZERO;
-    }
+     // Checking if argument is 0
+     if(this.compareTo(bint) == 0) {
+       return BrobInt.ZERO;
+     }
 
-    //Checking if signs are the same and determining which value is bigger
-    if (this.sign == 0 && bint.sign == 0) {
-      if (compareTo(bint) == 1) {
-        min = bint;
-        max = this;
-        signType = 0;
-      } else if (compareTo(bint) == -1) {
-        min = this;
-        max = bint;
-        signType = 1;
-      } else {
-        min = this;
-        max = bint;
-      }
-    }
-    if (this.sign == 1 && bint.sign == 1) {
-      if (compareTo(bint) == 1) {
-        min = bint;
-        max = this;
-        signType = 1;
-      } else if (compareTo(bint) == -1) {
-        min = this;
-        max = bint;
-        signType = 0;
-      } else {
-        min = this;
-        max = bint;
-      }
-    }
+     // Checking if signs are the same and determining which value is bigger
+     if (this.sign == 0 && bint.sign == 0) {
+           if (compareTo(bint) == 1) {
+             min = bint;
+             max = this;
+             signType = 0;
+           } else if (compareTo(bint) == -1) {
+             min = this;
+             max = bint;
+             signType = 1;
+           } else {
+             min = this;
+             max = bint;
+           }
+         }
+         if (this.sign == 1 && bint.sign == 1) {
+           if (compareTo(bint) == 1) {
+             min = bint;
+             max = this;
+             signType = 1;
+           } else if (compareTo(bint) == -1) {
+             min = this;
+             max = bint;
+             signType = 0;
+           } else {
+             min = this;
+             max = bint;
+           }
+         }
 
-    //If substracting a positive from a Negative then add the two values
-    if (this.sign == 1 && bint.sign == 0) {
-      signType = 1;
-      if (compareTo(bint) == 1) {
-        min = this;
-        max = bint;
-      } else if (compareTo(bint) == -1) {
-        min = bint;
-        max = this;
-      } else {
-        min = this;
-        max = bint;
-      }
-      BrobInt sumNeg = this.add(bint);
-      return sumNeg;
-    }
+         // If subtracting a positive from a negative then add the two values together
+         if (this.sign == 1 && bint.sign == 0) {
+           signType = 1;
+           if (compareTo(bint) == 1) {
+             min = this;
+             max = bint;
+           } else if (compareTo(bint) == -1) {
+             min = bint;
+             max = this;
+           } else {
+             min = this;
+             max = bint;
+           }
+           BrobInt sumPositive = this.add(bint);
+           return sumPositive;
+         }
 
-    //If subtracting a negative from a positive then add the two values
-    if (this.sign == 0 && bint.sign == 1) {
-      signType = 0;
-      if (compareTo(bint) == 1) {
-        min = this;
-        max = bint;
-      } else if (compareTo(bint) == -1) {
-        min = bint;
-        max = this;
-      } else {
-        min = this;
-        max = bint;
-      }
-      BrobInt sumPositive = this.add(bint);
-      return sumPositive;
-    }
+         // If subtracting a negative from a positive then add the two values together
+         if (this.sign == 0 && bint.sign == 1) {
+           signType = 0;
+           if (compareTo(bint) == 1) {
+             min = this;
+             max = bint;
+           } else if (compareTo(bint) == -1) {
+             min = bint;
+             max = this;
+           } else {
+             min = this;
+             max = bint;
+           }
+           BrobInt sumNeg = this.add(bint);
+           return sumNeg;
+         }
+
+     if(INFO_ON == true) {
+       System.out.println("Min: " + min);
+       System.out.println("Max: " + max);
+     }
 
     //Creating arrays to store values, both will be set to length of max
     //Difference in size will be filled in by zeros
-    int[] minBint = new int[max.reversedValues.length];
-    int[] maxBint = new int[max.reversedValues.length];
-    for (int i = 0; i < maxBint.length; i++) {
-      minBint[i] = 000000000;
-      maxBint[i] = 000000000;
-    }
-    int maxIndex = max.reversedValues.length - 1;
-    for (int i = min.reversedValues.length - 1; i >= 0; i--) {
-      minBint[maxIndex] = min.reversedValues[i];
-      maxIndex--;
-    }
-    for (int i = max.reversedValues.length - 1; i >=0; i--) {
-      maxBint[i] = max.reversedValues[i];
-    }
+     int[] minArray = new int[max.storedValues.length];
+     int[] maxArray = new int[max.storedValues.length];
+     for (int i = 0; i < maxArray.length; i++) {
+       minArray[i] = 000000000;
+       maxArray[i] = 000000000;
+     }
+     int maxIndex = max.storedValues.length - 1;
+     for (int i = min.storedValues.length - 1; i >= 0; i--) {
+       minArray[maxIndex] = min.storedValues[i];
+       maxIndex--;
+     }
+     for (int i = max.storedValues.length - 1; i >= 0; i--) {
+       maxArray[i] = max.storedValues[i];
+     }
+     if (INFO_ON == true){
+       System.out.println("Max Array:");
+       toArray(maxArray);
+       System.out.println("Min Array:");
+       toArray(minArray);
+     }
 
-    //Subtracting the two values if value signs are the same
-    int[] difference = new int [max.reversedValues.length + 1];
-    int diffIndex = max.reversedValues.length;
-    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
-      difference[diffIndex] = maxBint[i] - minBint[i] - borrow;
-      if (difference[diffIndex] < 0) {
-        difference[diffIndex] -= 1;
-        borrow = 1000000000;
-      } else {
-        borrow = 0;
-      }
-      diffIndex--;
-    }
+     int[] difference = new int[max.storedValues.length + 1];
+     int diffIndex = max.storedValues.length;
+     for (int i = max.storedValues.length - 1; i >= 0 ; i--) {
+       difference[diffIndex] = maxArray[i] - minArray[i] - borrow;
+       if(difference[diffIndex] < 0) {
+         difference[diffIndex] -= 1;
+         borrow = 1000000000;
+       } else {
+         borrow = 0;
+       }
+       diffIndex--;
+       if (INFO_ON == true) {
+         System.out.println("Sum Array:");
+         toArray(difference);
+       }
+     }
 
-    //returning results
-    String result = "";
-    for (int i = 0; i < difference.length; i++) {
-      result += difference[i];
-    }
-    if (signType == 1) {
-      result = "-" + result;
-    }
-    BrobInt finalDifference = new BrobInt(result.toString());
-    finalDifference = removeLeadingZeros(finalDifference);
-    return finalDifference;
+     // Returning result
+     String diffResult = "";
+     for (int i = 0; i < difference.length; i++){
+       diffResult += df.format(difference[i]);
+     }
+     if(signType == 1){
+       diffResult = "-" + diffResult;
+     }
+     BrobInt finalDifference = new BrobInt(diffResult.toString());
+     finalDifference = removeLeadingZeros(finalDifference);
+     return finalDifference;
    }
 
   /** 
@@ -315,84 +319,87 @@ public class BrobInt {
    *  @return BrobInt that is the product of the value of this BrobInt and the one passed in
    */
    public BrobInt multiply( BrobInt bint ) {
-    BrobInt min = null;
-    BrobInt max = null;
-    int carry = 0;
-    int count = 0;
-    int signType = 0;
+     BrobInt min = null;
+     BrobInt max = null;
+     int carry = 0;
+     int count = 0;
 
-    //Checking sign
-    if ((this.sign == 1 && bint.sign == 1) || (this.sign == 0 && bint.sign == 0)) {
-      signType = 0;
-    } else {
-      signType = 1;
-    }
+     // Checking sign
+     if((this.sign == 1 && bint.sign == 1) || (this.sign == 0 && bint.sign == 0)) {
+       signType = 0;
+     } else {
+       signType = 1;
+     }
+     if(compareTo(bint) == 1){
+       min = bint;
+       max = this;
+     } else if ((compareTo(bint) == -1) || (compareTo(bint) == 0)) {
+       min = this;
+       max = bint;
+     }
 
-    //Compareing bints to see which is larger
-    if (compareTo(bint) == 1) {
-      min = bint;
-      max = this;
-    } else if (compareTo(bint) == -1 || compareTo(bint) == 0) {
-      min = this;
-      max = bint;
-    }
-
-    //Detecting if either value is zero
-    if (max.allZeroDetect(max) == true || min.allZeroDetect(min) == true) {
-      return BrobInt.ZERO;
-    }
+     // If either value is zero return zero
+     if((max.allZeroDetect(max) == true) || (min.allZeroDetect(min) == true)) {
+       return BrobInt.ZERO;
+     }
 
     //Creating arrays to store values using max length, making up the difference in size by plugging in zeros
-    int[] minBint = new int [max.reversedValues.length];
-    int[] maxBint = new int [max.reversedValues.length];
-    for (int i = 0; i < maxBint.length; i++) {
-      minBint[i] = 000000000;
-      maxBint[i] = 000000000;
-    }
-    int maxIndex = max.reversedValues.length - 1;
-    for (int i = min.reversedValues.length - 1; i >= 0; i--) {
-      minBint[maxIndex] = min.reversedValues[i];
-      maxIndex--;
-    }
-    for (int i = max.reversedValues.length - 1; i >= 0; i--) {
-      maxBint[i] = max.reversedValues[i];
-    }
+     int[] minArray = new int[max.storedValues.length];
+     int[] maxArray = new int[max.storedValues.length];
+     for (int i = 0; i < maxArray.length; i++) {
+       minArray[i] = 000000000;
+       maxArray[i] = 000000000;
+     }
+     int maxIndex = max.storedValues.length - 1;
+     for (int i = min.storedValues.length - 1; i >= 0; i--) {
+       minArray[maxIndex] = min.storedValues[i];
+       maxIndex--;
+     }
+     for (int i = max.storedValues.length - 1; i >= 0; i--) {
+       maxArray[i] = max.storedValues[i];
+     }
+     if (INFO_ON == true) {
+       System.out.println("Max Array:");
+       toArray(maxArray);
+       System.out.println("Min Array:");
+       toArray(minArray);
+     }
 
-    //Multiplying the values together
-    long[] product = new long [max.reversedValues.length * 2];
-    for (int i = 0; i < product.length; i++) {
-      product[i] = 0;
-    }
-    int productIndex = product.length - 1;
-    for (int i = minBint.length - 1; i >= 0; i--) {
-      for (int j = maxBint.length - 1; j >= 0; j--) {
-        product[productIndex] += (long) maxBint[j] * (long) minBint[i] + (long) carry;
-        if (product[productIndex] <= 999999999) {
-          carry = 0;
-        } else {
-          while (product[productIndex] > 999999999) {
-            product[productIndex] -= 1000000000;
-            carry += 1;
-          }
-        }
-        productIndex--;
-      }
-      count++;
-      productIndex = max.reversedValues.length * 2 - count;
-    }
+     // Multiplying the values together
+     long[] product = new long[max.storedValues.length * 2];
+     for (int i = 0; i < product.length; i++) {
+       product[i] = 0;
+     }
 
-    //Returning result
-    String result = "";
-    for (int i = 0; i < product.length; i++) {
-      result += product[i];
-    }
-    if (signType == 1) {
-      result = "-" + result;
-    }
-    BrobInt finalProduct = new BrobInt(result.toString());
-    finalProduct = removeLeadingZeros(finalProduct);
-    return finalProduct;
+     int productIndex = product.length - 1;
+     for(int i = minArray.length - 1; i >= 0; i--) {
+       for(int j = maxArray.length - 1; j >= 0; j--) {
+         product[productIndex] += (long) maxArray[j] * (long) minArray[i] + (long) carry;
+         if(product[productIndex] <= 999999999) {
+           carry = 0;
+         } else {
+           while (product[productIndex] > 999999999) {
+             product[productIndex] -= 1000000000;
+             carry += 1;
+           }
+         }
+         productIndex--;
+       }
+       count++;
+       productIndex = max.storedValues.length * 2 - count;
+     }
 
+     // Returning result
+     String productResult = "";
+     for (int i = 0; i < product.length; i++) {
+       productResult += df.format(product[i]);
+     }
+     if (signType == 1) {
+       productResult = "-" + productResult;
+     }
+     BrobInt finalProduct = new BrobInt(productResult.toString());
+     finalProduct = removeLeadingZeros(finalProduct);
+     return finalProduct;
    }
 
   /** 
@@ -401,46 +408,47 @@ public class BrobInt {
    *  @return BrobInt that is the dividend of this BrobInt divided by the one passed in
    */
    public BrobInt divide( BrobInt bint ) {
-    BrobInt dividend = bint;
-    BrobInt divisor = this;
-    BrobInt d3;
-    BrobInt quotient = new BrobInt("0");
-    int index = 0;
+      BrobInt dividend = bint;
+      BrobInt divisor = this;
+      BrobInt d3;
+      BrobInt quotient = new BrobInt("0");
+      int index = 0;
 
-    //Checking if dividend is a zero
-    if (dividend.equals(BrobInt.ZERO)) {
-      throw new IllegalArgumentException("Cannot divide zero by a number");
-    }
+      // Checking if dividend is a zero
+      if (dividend.equals(BrobInt.ZERO)) {
+        throw new IllegalArgumentException ("Cannot divide zero by anything");
+      }
 
-    //Comparing values
-    if (dividend.equals(divisor)) {
-      return BrobInt.ONE;
-    }
+      // Return one if values are equal
+      if (dividend.equals(divisor)) {
+        return BrobInt.ONE;
+      }
 
-    //Dividing the values
-    index = dividend.toString().length();
-    d3 = new BrobInt(divisor.toString().substring(0, index));
-    if (dividend.compareTo(d3) == 1) {
-      index++;
+      // Dividing the values
+      index = dividend.toString().length();
       d3 = new BrobInt(divisor.toString().substring(0, index));
-    }
-    while (index <= divisor.toString().length()) {
-      while (d3.compareTo(dividend) == 1 || d3.compareTo(dividend) == 0) {
-        d3 = d3.subtract(dividend);
-        quotient = quotient.add(BrobInt.ONE);
-      }
-      if (index == divisor.toString().length()) {
-        break;
-      } else {
-        index++;
-      }
-      d3 = d3.multiply(BrobInt.TEN);
-      quotient = quotient.multiply(BrobInt.TEN);
-      BrobInt digit = new BrobInt(divisor.toString().substring(index - 1, index));
-      d3 = d3.add(digit);
-    }
 
-    return quotient;
+      if (dividend.compareTo(d3) == 1) {
+        index++;
+        d3 = new BrobInt(divisor.toString().substring(0, index));
+      }
+
+      while (index <= divisor.toString().length()) {
+        while ((d3.compareTo(dividend) == 1) || (d3.compareTo(dividend) == 0)) {
+          d3 = d3.subtract(dividend);
+          quotient = quotient.add(BrobInt.ONE);
+        }
+        if(index == divisor.toString().length()) {
+          break;
+        } else {
+          index++;
+        }
+        d3 = d3.multiply(BrobInt.TEN);
+        quotient = quotient.multiply(BrobInt.TEN);
+        BrobInt digit = new BrobInt (divisor.toString().substring(index - 1, index));
+        d3 = d3.add(digit);
+      }
+      return quotient;
    }
 
   /** 
@@ -449,14 +457,15 @@ public class BrobInt {
    *  @return BrobInt that is the remainder of division of this BrobInt by the one passed in
    */
    public BrobInt remainder( BrobInt bint ) {
-    BrobInt bint1 = this;
-    BrobInt bint2 = bint;
-    BrobInt result = bint1.subtract(bint1.divide(bint2).multiply(bint2));
-    if (result.equals(BrobInt.ZERO)) {
-      return BrobInt.ZERO;
-    }
-    return result;
-    }
+     BrobInt bint1 = this;
+     BrobInt bint2 = bint;
+     BrobInt result = bint1.subtract(bint1.divide(bint2).multiply(bint2));
+     if(result.equals(BrobInt.ZERO)){
+       return BrobInt.ZERO;
+     } else {
+       return result;
+     }
+   }
 
   /** 
    *  Method to compare a BrobInt passed as argument to this BrobInt
@@ -468,50 +477,50 @@ public class BrobInt {
    */
    public int compareTo( BrobInt bint ) {
 
-     // remove any leading zeros because we will compare lengths
-      String me  = removeLeadingZeros( this ).toString();
-      String arg = removeLeadingZeros( bint ).toString();
+      // remove any leading zeros because we will compare lengths
+       String me  = removeLeadingZeros( this ).toString();
+       String arg = removeLeadingZeros( bint ).toString();
 
-     // handle the signs here
-      if( 1 == sign && 0 == bint.sign ) {
-         return -1;
-      } else if( 0 == sign && 1 == bint.sign ) {
-         return 1;
-      } else if( 0 == sign && 0 == bint.sign ) {
-        // the signs are the same at this point ~ both positive
-        // check the length and return the appropriate value
-        //   1 means this is longer than bint, hence larger positive
-        //  -1 means bint is longer than this, hence larger positive
-         if( me.length() != arg.length() ) {
-            return (me.length() > arg.length()) ? 1 : -1;
-         }
-      } else {
-        // the signs are the same at this point ~ both negative
-         if( me.length() != arg.length() ) {
-            return (me.length() > arg.length()) ? -1 : 1;
-         }
-      }
+      // handle the signs here
+       if( 1 == sign && 0 == bint.sign ) {
+          return -1;
+       } else if( 0 == sign && 1 == bint.sign ) {
+          return 1;
+       } else if( 0 == sign && 0 == bint.sign ) {
+         // the signs are the same at this point ~ both positive
+         // check the length and return the appropriate value
+         //   1 means this is longer than bint, hence larger positive
+         //  -1 means bint is longer than this, hence larger positive
+          if( me.length() != arg.length() ) {
+             return (me.length() > arg.length()) ? 1 : -1;
+          }
+       } else {
+         // the signs are the same at this point ~ both negative
+          if( me.length() != arg.length() ) {
+             return (me.length() > arg.length()) ? -1 : 1;
+          }
+       }
 
-     // otherwise, they are the same length, so compare absolute values
-      for( int i = 0; i < me.length(); i++ ) {
-         Character a = Character.valueOf( me.charAt(i) );
-         Character b = Character.valueOf( arg.charAt(i) );
-         if( Character.valueOf(a).compareTo( Character.valueOf(b) ) > 0 ) {
-            return 1;
-         } else if( Character.valueOf(a).compareTo( Character.valueOf(b) ) < 0 ) {
-            return (-1);
-         }
-      }
-      return 0;
-   }
+      // otherwise, they are the same length, so compare absolute values
+       for( int i = 0; i < me.length(); i++ ) {
+          Character a = Character.valueOf( me.charAt(i) );
+          Character b = Character.valueOf( arg.charAt(i) );
+          if( Character.valueOf(a).compareTo( Character.valueOf(b) ) > 0 ) {
+             return 1;
+          } else if( Character.valueOf(a).compareTo( Character.valueOf(b) ) < 0 ) {
+             return (-1);
+          }
+       }
+       return 0;
+    }
 
-  /**
+ /**
    *  Method to check if a BrobInt passed as argument is equal to this BrobInt
    *  @param  bint     BrobInt to compare to this
    *  @return boolean  that is true if they are equal and false otherwise
    */
    public boolean equals( BrobInt bint ) {
-      return ( (this.sign == bint.sign) && (this.toString().equals( bint.toString() )) );
+      return (internalValue.equals( bint.toString() ));
    }
 
   /**
@@ -531,7 +540,10 @@ public class BrobInt {
    *  @return String  which is the String representation of this BrobInt
    */
    public String toString() {
-    return internalValue;
+     if(sign == 1){
+       return "-" + internalValue;
+     }
+     return internalValue;
    }
 
   /**
@@ -586,10 +598,9 @@ public class BrobInt {
    *  @param   d  byte array from which to display the contents
    *  NOTE: may be changed to int[] or some other type based on requirements in code above
    */
-   public void toArray( byte[] d ) {
+   public void toArray( int[] d ) {
       System.out.println( "Array contents: " + Arrays.toString( d ) );
    }
-
 
   /**
    *  the main method redirects the user to the test class
@@ -615,4 +626,9 @@ public class BrobInt {
       System.exit( 0 );
 
    }
+
 }
+
+
+   
+
