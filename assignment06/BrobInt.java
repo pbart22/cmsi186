@@ -17,39 +17,72 @@
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 import java.util.Arrays;
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 public class BrobInt {
+   /**
+   * Constant for "zero"
+   */
+   public static final BrobInt ZERO = new BrobInt(  "0" );
+      /**
+   * Constant for "one"
+   */
+   public static final BrobInt ONE = new BrobInt(  "1" );
+      /**
+   * Constant for "two"
+   */
+   public static final BrobInt TWO = new BrobInt(  "2" );
+      /**
+   * Constant for "three"
+   */
+   public static final BrobInt THREE = new BrobInt(  "3" );
+      /**
+   * Constant for "four"
+   */
+   public static final BrobInt FOUR = new BrobInt(  "4" );
+      /**
+   * Constant for "five"
+   */
+   public static final BrobInt FIVE = new BrobInt(  "5" );
+      /**
+   * Constant for "six"
+   */
+   public static final BrobInt SIX = new BrobInt(  "6" );
+      /**
+   * Constant for "seven"
+   */
+   public static final BrobInt SEVEN = new BrobInt(  "7" );
+      /**
+   * Constant for "eight"
+   */
+   public static final BrobInt EIGHT = new BrobInt(  "8" );
+      /**
+   * Constant for "nine"
+   */
+   public static final BrobInt NINE = new BrobInt(  "9" );
+      /**
+   * Constant for "ten"
+   */
+   public static final BrobInt TEN      = new BrobInt( "10" );
 
-   public static final BrobInt ZERO     = new BrobInt(  "0" );      /// Constant for "zero"
-   public static final BrobInt ONE      = new BrobInt(  "1" );      /// Constant for "one"
-   public static final BrobInt TWO      = new BrobInt(  "2" );      /// Constant for "two"
-   public static final BrobInt THREE    = new BrobInt(  "3" );      /// Constant for "three"
-   public static final BrobInt FOUR     = new BrobInt(  "4" );      /// Constant for "four"
-   public static final BrobInt FIVE     = new BrobInt(  "5" );      /// Constant for "five"
-   public static final BrobInt SIX      = new BrobInt(  "6" );      /// Constant for "six"
-   public static final BrobInt SEVEN    = new BrobInt(  "7" );      /// Constant for "seven"
-   public static final BrobInt EIGHT    = new BrobInt(  "8" );      /// Constant for "eight"
-   public static final BrobInt NINE     = new BrobInt(  "9" );      /// Constant for "nine"
-   public static final BrobInt TEN      = new BrobInt( "10" );      /// Constant for "ten"
-
-  /// Some constants for other intrinsic data types
-  ///  these can help speed up the math if they fit into the proper memory space
-   public static final BrobInt MAX_INT  = new BrobInt( Integer.valueOf( Integer.MAX_VALUE ).toString() );
-   public static final BrobInt MIN_INT  = new BrobInt( Integer.valueOf( Integer.MIN_VALUE ).toString() );
-   public static final BrobInt MAX_LONG = new BrobInt( Long.valueOf( Long.MAX_VALUE ).toString() );
-   public static final BrobInt MIN_LONG = new BrobInt( Long.valueOf( Long.MIN_VALUE ).toString() );
 
   /// These are the internal fields
-   public  String internalValue = "";        // internal String representation of this BrobInt
-   public  byte   sign          = 0;         // "0" is positive, "1" is negative
-   private String reversed      = "";        // the backwards version of the internal String representation
-   public DecimalFormat df = new DecimalFormat("000000000");  // Makes larger numbers easier to read
-   public int[] storedValues = null;          // Stores user input in an array
-   public int signType = 0;                  // variable to store sign if '-' so we can attach it to the result of our calculations if necessary
+   /**
+   * internal String representation of this BrobInt
+   */
+   public  String internalValue = "";
+   /**
+   * Variable that stores if the value is positive or negative, "0" is positive, "1" is negative
+   */
+   public  byte   sign = 0;
+   /**
+   * Array that stores user input for later use during calculations
+   */
+   public int[] storedValues = null;
+   /**
+   * variable to store sign if '-' so we can attach the '-' sign to the result of our calculations if necessary
+   */
+   public int signType = 0;
 
-   private static final boolean DEBUG_ON = false;
-   private static final boolean INFO_ON  = false;
 
   /**
    *  Constructor takes a string and assigns it to the internal storage, checks for a sign character
@@ -166,7 +199,7 @@ public class BrobInt {
      // Returning results
      String result = "";
      for (int i = 0; i < sum.length; i++) {
-       result += df.format(sum[i]);
+       result += sum[i];
      }
      if(signType == 1){
        result = "-" + result;
@@ -255,11 +288,6 @@ public class BrobInt {
            return sumNeg;
          }
 
-     if(INFO_ON == true) {
-       System.out.println("Min: " + min);
-       System.out.println("Max: " + max);
-     }
-
     //Creating arrays to store values, both will be set to length of max
     //Difference in size will be filled in by zeros
      int[] minArray = new int[max.storedValues.length];
@@ -276,12 +304,6 @@ public class BrobInt {
      for (int i = max.storedValues.length - 1; i >= 0; i--) {
        maxArray[i] = max.storedValues[i];
      }
-     if (INFO_ON == true){
-       System.out.println("Max Array:");
-       toArray(maxArray);
-       System.out.println("Min Array:");
-       toArray(minArray);
-     }
 
      int[] difference = new int[max.storedValues.length + 1];
      int diffIndex = max.storedValues.length;
@@ -294,16 +316,12 @@ public class BrobInt {
          borrow = 0;
        }
        diffIndex--;
-       if (INFO_ON == true) {
-         System.out.println("Sum Array:");
-         toArray(difference);
-       }
      }
 
      // Returning result
      String diffResult = "";
      for (int i = 0; i < difference.length; i++){
-       diffResult += df.format(difference[i]);
+       diffResult += difference[i];
      }
      if(signType == 1){
        diffResult = "-" + diffResult;
@@ -358,12 +376,6 @@ public class BrobInt {
      for (int i = max.storedValues.length - 1; i >= 0; i--) {
        maxArray[i] = max.storedValues[i];
      }
-     if (INFO_ON == true) {
-       System.out.println("Max Array:");
-       toArray(maxArray);
-       System.out.println("Min Array:");
-       toArray(minArray);
-     }
 
      // Multiplying the values together
      long[] product = new long[max.storedValues.length * 2];
@@ -392,7 +404,7 @@ public class BrobInt {
      // Returning result
      String productResult = "";
      for (int i = 0; i < product.length; i++) {
-       productResult += df.format(product[i]);
+       productResult += product[i];
      }
      if (signType == 1) {
        productResult = "-" + productResult;
@@ -537,7 +549,7 @@ public class BrobInt {
 
   /**
    *  Method to return a String representation of this BrobInt
-   *  @return String  which is the String representation of this BrobInt
+   *  @return String  which is the String representation of this BrobInt and appends a "-" in front if value is negative
    */
    public String toString() {
      if(sign == 1){
